@@ -11,8 +11,9 @@
 \usepackage{rotating}
 \usepackage[final]{pdfpages}
 \usepackage{array}
+\usepackage{amsmath}
 \usepackage{algorithm}
-\usepackage{algpseudocode}
+\usepackage[noend]{algpseudocode}
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
@@ -46,8 +47,28 @@ For our project we intend to investigate a potential improvement to decision tre
 We would like to (instead) store all the training examples that make it to a leaf node, and do nearest neighbor predictions with those example sets.
 
 \section{The Algorithm}
+\begin{algorithm}
+\caption{Building a tree}\label{euclid}
+\begin{algorithmic}[1]
+\Function{MakeSubtree}{set of training instances $D$}
 
-<TODO> PUT ALGORITHM PSEUDOCODE SOMEWHERE IN HERE
+\State $C \gets \Call{DetermineCandidateSplits}{D}$
+
+\If{stopping criteria met}
+	\State make a leaf node $N$ 
+	\State store instances $D$ here  // (possibility 1)
+\Else
+	\State make an internal node $N$ 
+	\State $S \gets \Call{FindBestSplit}{D, C}$
+	\For{each outcome $k$ of $S$}
+		\State $D_k \gets$ subset of instances that have outcome $k$ 
+		\State $k^{th}$ child of $N \gets \Call{MakeSubtree}{D_k}$
+	\EndFor
+\EndIf
+\Return subtree rooted at $N$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
 
 We will likely test a few variants as we go about our implementation:
 
