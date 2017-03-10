@@ -11,6 +11,8 @@
 \usepackage{rotating}
 \usepackage[final]{pdfpages}
 \usepackage{array}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
@@ -38,18 +40,28 @@
 \setlength{\baselineskip}{18pt}
 \maketitle
 
+\section{Introduction}
+For our project we intend to investigate a potential improvement to decision tree learning. For most decision tree learning algorithms, the leaf nodes encode a majority-based prediction (that is, the leaf node predicts whatever label is held by a majority of the training examples that made it to that leaf node).  
+
+We would like to (instead) store all the training examples that make it to a leaf node, and do nearest neighbor predictions with those example sets.
+
+\section{The Algorithm}
+
+<TODO> PUT ALGORITHM PSEUDOCODE SOMEWHERE IN HERE
+
+We will likely test a few variants as we go about our implementation:
+
 \begin{enumerate}
-\item Dataset (note multiple)
-\item Algorithm
-    \begin{enumerate}
-    \item Basic idea: Combining decision trees and nearest neighbors
-    \item Implementation Planning/Details
-        \begin{enumerate}
-            \item How to calculate info gain
-            \item Pruning
-            \item k-d trees?
-            \item etc.
-        \end{enumerate}
-    \end{enumerate}
+	\item Learn the decision tree in the standard fashion, prune it back (using the majority-based prediction), and then create and store k-d trees (to perform nearest neighbor predictions) at each leaf node.
+	\item Learn the tree in the standard fashion, prune it back using k-d trees created from the example sets at a node (if a k-d tree over a whole set does better than the k-d trees on either side of a split, merge the child subtrees), and then store k-d trees for each leaf node. 
+	\item Instead of using an information-theoretic gain measure, pick splitting features by comparing a nearest neighbor search on an entire example set (at the current node) to nearest neighbor searches on possible split example sets.  Stop growing the tree once splitting nodes no longer leads to improvement.
+	\item Same as possibility 3, but instead use an approximation to nearest neighbor (such as locally sensitive hashing or best bin first) to make learning computationally more tractable.
+
 \end{enumerate}
+
+\section{Dataset and Evaluation}
+To evaluate the performance of our algorithm, we will test it on the MNIST database of handwritten digits (link: http://yann.lecun.com/exdb/mnist/). This dataset has pixel values (integers from 0 to 255) for 60,000 training examples. Many other algorithms have been run on this dataset, which provides us with good benchmarks for comparison. The MNIST database contains a separate testing set of 10, 000 examples.
+
+When testing our implementation, we will compare it to the following algorithms:  1) decision trees; 2) Random Forest decision tree ensembles; and 3) nearest-neighbors.
+	
 \end{document}
