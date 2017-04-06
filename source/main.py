@@ -36,17 +36,17 @@ def readIDX(fileName):
         f.read(2)
 
         # data type
-        dataType = f.read(1)[0]
+        dataType = f.read(1)
 
         # number of bytes / struct format of data type, assuming MSB format
         # more at https://docs.python.org/3/library/struct.html
         options = {
-            '\x08': [1, 'B'],  # unsigned byte
-            '\x09': [1, 'b'],  # signed byte
-            '\x0B': [2, '>h'],  # short (2 bytes)
-            '\x0C': [4, '>i'],  # int (4 bytes)
-            '\x0D': [4, '>f'],  # float (4 bytes)
-            '\x0E': [8, '>d'],  # double (8bytes)
+            b'\x08': [1, 'B'],  # unsigned byte
+            b'\x09': [1, 'b'],  # signed byte
+            b'\x0B': [2, '>h'],  # short (2 bytes)
+            b'\x0C': [4, '>i'],  # int (4 bytes)
+            b'\x0D': [4, '>f'],  # float (4 bytes)
+            b'\x0E': [8, '>d'],  # double (8bytes)
         }
         dataTypeSize = options[dataType][0]
         dataTypeFormat = options[dataType][1]
