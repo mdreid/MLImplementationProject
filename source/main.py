@@ -75,4 +75,3 @@ labelData = readIDX(TRAIN_LABEL_FILE)
 stop = timeit.default_timer()
 print("Read " + TRAIN_LABEL_FILE + " time: " + str(stop - start))
 
-print(labelData)
