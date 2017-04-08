@@ -44,7 +44,7 @@
 \section{Introduction}
 For our project we intend to investigate a potential improvement to decision tree learning. For most decision tree learning algorithms, the leaf nodes encode a majority-based prediction (that is, the leaf node predicts whatever label is held by a majority of the training examples that made it to that leaf node).  
 
-We would like to (instead) store all the training examples that make it to a leaf node, and do nearest neighbor predictions with those example sets.
+We would like to instead store all the training examples that make it to a leaf node and do nearest neighbor predictions with those example sets.
 
 \section{Algorithm}
 \begin{algorithm}
@@ -81,7 +81,7 @@ We will likely test a few variants as we go about our implementation:
 \end{enumerate}
 
 \section{Dataset and Evaluation}
-To evaluate the performance of our algorithm, we will test it on the MNIST database of handwritten digits (link: http://yann.lecun.com/exdb/mnist/). This dataset has pixel values (integers from 0 to 255) for 60,000 training examples. Many other algorithms have been run on this dataset, which provides us with good benchmarks for comparison. The MNIST database contains a separate testing set of 10, 000 examples.
+To evaluate the performance of our algorithm, we will test it on the MNIST database of handwritten digits (link: http://yann.lecun.com/exdb/mnist/). This dataset has pixel values (integers from 0 to 255) for 60,000 training examples. Many other algorithms have been run on this dataset, which provides us with good benchmarks for comparison. The MNIST database contains a separate testing set of 10,000 examples.
 
 When testing our implementation, we will compare it to the following algorithms:  1) decision trees; 2) Random Forest decision tree ensembles; and 3) nearest-neighbors.
 	
