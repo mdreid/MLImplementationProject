@@ -64,14 +64,14 @@ def readIDX(fileName):
 
     return data
 
-
-start = timeit.default_timer()
-trainData = readIDX(TRAIN_IMAGES_FILE)
-stop = timeit.default_timer()
-print("Read " + TRAIN_IMAGES_FILE + " time: " + str(stop - start))
-
-start = timeit.default_timer()
-labelData = readIDX(TRAIN_LABEL_FILE)
-stop = timeit.default_timer()
-print("Read " + TRAIN_LABEL_FILE + " time: " + str(stop - start))
-
+if __name__ == "__main__":
+    start = timeit.default_timer()
+    trainData = readIDX(TRAIN_IMAGES_FILE)
+    stop = timeit.default_timer()
+    print("Read " + TRAIN_IMAGES_FILE + " time: " + str(stop - start))
+    
+    start = timeit.default_timer()
+    labelData = readIDX(TRAIN_LABEL_FILE)
+    stop = timeit.default_timer()
+    print("Read " + TRAIN_LABEL_FILE + " time: " + str(stop - start))
+   
