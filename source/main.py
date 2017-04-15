@@ -1,6 +1,7 @@
 import timeit
 import struct
 import os
+import numpy as np
 
 # INPUT FILES
 DATASET_FOLDERS = '.' + os.sep + 'datasets'
@@ -13,6 +14,7 @@ TRAIN_LABEL_FILE = DATASET_FOLDERS + os.sep + 'train-labels-idx1-ubyte'
 def readDimension(f, dimensions, currentDimension, dataTypeSize, dataTypeFormat):
     data = []
     dataLength = dimensions[currentDimension]
+    #print("Data length: " + str(dataLength))
     if currentDimension == len(dimensions) - 1:
         dataRaw = f.read(dataTypeSize * dataLength)
         offSet = 0
@@ -58,11 +60,14 @@ def readIDX(fileName):
             dimensions.append(struct.unpack('>i', f.read(4))[0])
 
         data = readDimension(f, dimensions, 0, dataTypeSize, dataTypeFormat)
+        matrix = np.array(data)
+        if (len(dimensions) > 1): # these are training features
+            matrix = matrix.reshape(dimensions[0], dimensions[1]*dimensions[2])
     finally:
         if f is not None:
             f.close()
 
-    return data
+    return matrix
 
 if __name__ == "__main__":
     start = timeit.default_timer()
