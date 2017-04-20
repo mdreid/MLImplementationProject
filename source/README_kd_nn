@@ -1,0 +1,15 @@
+Include in this commit:
+
+In main.py:
+- Code to reduce sample size to 1000 for faster training/testing. The size can be changed by setting SMALL_SIZE to a different number
+- I've created a smaller size dataset (1000), so you don't have to re-run it (set USE_SMALL_SIZE=1 and SMALL_SIZE=1000 is enough)
+- Also, the smaller dataset is dumped to file for faster loading
+- To use the full dataset, set USE_SMALL_SIZE = 0
+
+Nearest neighbor implement is in NearestNeighborKD.py
+- Call .fit to train 
+- Call .predict to test
+- Some notes: because the data has 784 features, which is inefficient for k-d tree (https://en.wikipedia.org/wiki/K-d_tree (High-dimensional data)). I implemented a shrink function to reduce the dimension of our instances (from 784 to 28), which can be turned on by setting shrink_features=1 in the fit function
+
+# based on https://en.wikipedia.org/wiki/K-d_tree
+# and http://code.activestate.com/recipes/577497-kd-tree-for-nearest-neighbor-search-in-a-k-dimensi/
