@@ -1,0 +1,5 @@
+-Better printing of decision tree
+    -For debugging and visualizing
+-Functions for determining height and number of leaves
+-Integrate with k-d trees
+-Change subsampling methods for k-d tree
