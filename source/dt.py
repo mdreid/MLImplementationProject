@@ -300,15 +300,23 @@ def calcAccuracy(root, data, labels):
         
 
 if __name__ == "__main__":
+    if (len(sys.argv) < 2):
+        print("Usage: python dt.py <number_of_examples>")
+        sys.exit("Invalid parameters")
     getcontext().prec = 15
     np.set_printoptions(threshold=np.inf)
-    train_matrix = read_input.readIDX(read_input.TRAIN_IMAGES_FILE)
-    train_label = read_input.readIDX(read_input.TRAIN_LABEL_FILE)
-    test_matrix = read_input.readIDX(read_input.TEST_IMAGES_FILE)
-    test_label = read_input.readIDX(read_input.TEST_LABEL_FILE)
+    num_examples = int(sys.argv[1])
+    start = timeit.default_timer()
+    train_matrix = read_input.readIDX(read_input.TRAIN_IMAGES_FILE, num_examples)
+    train_label = read_input.readIDX(read_input.TRAIN_LABEL_FILE, num_examples)
+    test_matrix = read_input.readIDX(read_input.TEST_IMAGES_FILE, num_examples)
+    test_label = read_input.readIDX(read_input.TEST_LABEL_FILE, num_examples)
     root = makeDT(train_matrix, train_label)
-    print(root)
+    print("Number of examples: " + str(num_examples))
+    #print(root)
     print("Pre-accuracy: " + str(calcAccuracy(root, test_matrix, test_label)))
     pruneDT(root, test_matrix, test_label)
-    print(root)
+    #print(root)
     print("Post-accuracy: " + str(calcAccuracy(root, test_matrix, test_label)))
+    end = timeit.default_timer()
+    print("Duration: " + str(end-start) + " s")

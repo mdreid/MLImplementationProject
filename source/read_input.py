@@ -30,7 +30,7 @@ def readDimension(f, dimensions, currentDimension, dataTypeSize, dataTypeFormat)
         return data
 
 
-def readIDX(fileName):
+def readIDX(fileName, num_examples=0):
     f = None
     try:
         f = open(fileName, 'rb')
@@ -59,7 +59,9 @@ def readIDX(fileName):
         for i in range(d):
             dimensions.append(struct.unpack('>i', f.read(4))[0])
 
-        dimensions[0] = 100
+        if num_examples > 0:
+            dimensions[0] = num_examples
+
         print(dimensions)
         data = readDimension(f, dimensions, 0, dataTypeSize, dataTypeFormat)
         matrix = np.array(data)
