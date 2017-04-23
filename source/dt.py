@@ -58,7 +58,8 @@ def findThresholdPoints(ft_vector, label_vector, level):
     ft_vector_len = len(ft_vector)
     for i in range(1, ft_vector_len):
         if ((int(label_vector[i]) != prev_label) and not (ft_vector[i-1] == ft_vector[i])):
-            t = Decimal(ft_vector[i-1] + ft_vector[i]) / Decimal(2)
+            # had to cast numpy.int64 to int so Decimal could do its conversion
+            t = Decimal(int(ft_vector[i-1] + ft_vector[i])) / Decimal(2)
             thresholds[t] = i-1
             if (i == ft_vector_len-1 and ft_vector[i] == ft_vector[i-1]):
                 thresholds[t] = i
@@ -313,24 +314,41 @@ def allLeavesHaveKDTree(root):
     return allLeavesHaveKDTree(root.left) and allLeavesHaveKDTree(root.right)
 
 if __name__ == "__main__":
-    if (len(sys.argv) < 2):
-        print("Usage: python dt.py <number_of_examples>")
+    if (len(sys.argv) != 4):
+        print("Usage: python dt.py <number_training> <number_tuning> <number_testing")
         sys.exit("Invalid parameters")
     getcontext().prec = 15
     np.set_printoptions(threshold=np.inf)
-    num_examples = int(sys.argv[1])
+    
+    num_training = int(sys.argv[1])
+    num_tuning = int(sys.argv[2])
+    num_testing = int(sys.argv[3])
+    
+    num_examples = num_training + num_tuning + num_testing
+    
     start = timeit.default_timer()
-    train_matrix = read_input.readIDX(read_input.TRAIN_IMAGES_FILE, num_examples)
-    train_label = read_input.readIDX(read_input.TRAIN_LABEL_FILE, num_examples)
-    test_matrix = read_input.readIDX(read_input.TEST_IMAGES_FILE, num_examples)
-    test_label = read_input.readIDX(read_input.TEST_LABEL_FILE, num_examples)
+    start_matrix = read_input.readIDX(read_input.TRAIN_IMAGES_FILE, num_examples)
+    start_label = read_input.readIDX(read_input.TRAIN_LABEL_FILE, num_examples)
+
+    train_matrix = start_matrix[0:num_training]
+    train_label = start_label[0:num_training]
+    
+    tune_start = num_training
+    tune_matrix = start_matrix[tune_start:(tune_start + num_tuning)]
+    tune_label = start_label[tune_start:(tune_start + num_tuning)]
+    
+    test_start = tune_start + num_tuning
+    test_matrix = start_matrix[test_start:(test_start + num_testing)]
+    test_label = start_label[test_start:(test_start + num_testing)]
+
+    #test_matrix = tune_matrix
+    #test_label = tune_label
+
     root = makeDT(train_matrix, train_label)
-    print("Number of examples: " + str(num_examples))
-    #print(root)
-    print("Pre-accuracy: " + str(calcAccuracy(root, test_matrix, test_label, False)))
-    pruneDT(root, test_matrix, test_label)
+    print("Size of training set: " + str(num_training))
+    print("Pre-pruning accuracy: " + str(calcAccuracy(root, test_matrix, test_label, False)))
+    pruneDT(root, tune_matrix, tune_label)
     assert(allLeavesHaveKDTree(root))
-    #print(root)
-    print("Post-accuracy: " + str(calcAccuracy(root, test_matrix, test_label, True)))
+    print("Post-pruning accuracy: " + str(calcAccuracy(root, test_matrix, test_label, True)))
     end = timeit.default_timer()
     print("Duration: " + str(end-start) + " s")
