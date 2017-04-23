@@ -1,12 +1,23 @@
-import timeit
 import struct
 import os
 import numpy as np
+import cPickle as pickle
+from NearestNeighborKD import NearestNeighborKD as nn
 
 # INPUT FILES
 DATASET_FOLDERS = '.' + os.sep + 'datasets'
 TRAIN_IMAGES_FILE = DATASET_FOLDERS + os.sep + 'train-images-idx3-ubyte'
 TRAIN_LABEL_FILE = DATASET_FOLDERS + os.sep + 'train-labels-idx1-ubyte'
+
+SMALL_SIZE = 1000
+TRAIN_IMAGES_FILE_SMALL = TRAIN_IMAGES_FILE + '_small_' + str(SMALL_SIZE)
+TRAIN_LABEL_FILE_SMALL = TRAIN_LABEL_FILE + '_small_' + str(SMALL_SIZE)
+
+# Set to 1 to use a smaller data set
+USE_SMALL_SIZE = 1
+
+# Set to 1 if you change the SMALL_SIZE to create a smaller set of data, you only have to do this once
+NEW_SMALL_SIZE = 0
 
 
 # Read the data matrix whose dimensions are in "dimensions" array
@@ -14,7 +25,7 @@ TRAIN_LABEL_FILE = DATASET_FOLDERS + os.sep + 'train-labels-idx1-ubyte'
 def readDimension(f, dimensions, currentDimension, dataTypeSize, dataTypeFormat):
     data = []
     dataLength = dimensions[currentDimension]
-    #print("Data length: " + str(dataLength))
+    # print("Data length: " + str(dataLength))
     if currentDimension == len(dimensions) - 1:
         dataRaw = f.read(dataTypeSize * dataLength)
         offSet = 0
@@ -61,22 +72,45 @@ def readIDX(fileName):
 
         data = readDimension(f, dimensions, 0, dataTypeSize, dataTypeFormat)
         matrix = np.array(data)
-        if (len(dimensions) > 1): # these are training features
-            matrix = matrix.reshape(dimensions[0], dimensions[1]*dimensions[2])
+        if len(dimensions) > 1:  # these are training features
+            matrix = matrix.reshape(dimensions[0], dimensions[1] * dimensions[2])
     finally:
         if f is not None:
             f.close()
 
     return matrix
 
+
+def loadData():
+    if USE_SMALL_SIZE == 1:
+        if NEW_SMALL_SIZE == 1:
+            bigTrain = readIDX(TRAIN_IMAGES_FILE)
+            bigLabel = readIDX(TRAIN_LABEL_FILE)
+
+            smallTrain = bigTrain[0:SMALL_SIZE]
+            smallLabel = bigLabel[0:SMALL_SIZE]
+            # dump to files for faster read later
+            pickle.dump(smallTrain, open(TRAIN_IMAGES_FILE_SMALL, "wb"))
+            pickle.dump(smallLabel, open(TRAIN_LABEL_FILE_SMALL, "wb"))
+        else:
+            smallTrain = pickle.load(open(TRAIN_IMAGES_FILE_SMALL, "rb"))
+            smallLabel = pickle.load(open(TRAIN_LABEL_FILE_SMALL, "rb"))
+        return smallTrain, smallLabel
+    else:
+        bigTrain = readIDX(TRAIN_IMAGES_FILE)
+        bigLabel = readIDX(TRAIN_LABEL_FILE)
+        return bigTrain, bigLabel
+
+
 if __name__ == "__main__":
-    start = timeit.default_timer()
-    trainData = readIDX(TRAIN_IMAGES_FILE)
-    stop = timeit.default_timer()
-    print("Read " + TRAIN_IMAGES_FILE + " time: " + str(stop - start))
-    
-    start = timeit.default_timer()
-    labelData = readIDX(TRAIN_LABEL_FILE)
-    stop = timeit.default_timer()
-    print("Read " + TRAIN_LABEL_FILE + " time: " + str(stop - start))
-   
+    train, label = loadData()
+    knn = nn()
+    knn.fit(train, label, None, 1)
+
+    print("Test on the training data")
+    for i in range(100):
+        point, predictlabel, squared_distance = knn.predict(train[i])
+        print("Training data {0} - Predict label {1} - Correct label {2}".format(i, predictlabel, label[i]))
+
+
+
