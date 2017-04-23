@@ -3,3 +3,4 @@
 -Functions for determining height and number of leaves
 -Integrate with k-d trees
 -Change subsampling methods for k-d tree
+-Determine timing data so we can estimate how many examples we can use
