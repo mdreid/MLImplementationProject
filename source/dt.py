@@ -4,8 +4,10 @@ import read_input
 import numpy as np
 import timeit
 import sys
+from NearestNeighborKD import NearestNeighborKD as nn
 
 LABEL_VALUES = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+NUM_FEATURES = 784
 
 class Node:
 
@@ -178,7 +180,7 @@ def is_single_class(labels):
 # checks for base case in which for each feature
 # all values are same
 def all_features_same(data):
-    for i in range(len(data[0])):
+    for i in range(NUM_FEATURES):
         col = data[:,i]
         val = col[0]
         for v in range(1, len(col)):
@@ -245,9 +247,11 @@ def pruneDT(root, data, label_vector):
     # filter data
     # TODO: Return error counts
     if root.kd:
+        root.kdtree = nn()
+        root.kdtree.fit(data, label_vector, list(range(NUM_FEATURES)), 0)
         return calcErrorCount(root, label_vector)
-    if len(data) == 0:
-        return 0
+    #if len(data) == 0:
+    #    return 0
     feat = root.feature
     threshold = root.threshold
     left_indices, right_indices = splitIndices(data, feat, threshold, len(label_vector))
@@ -267,6 +271,8 @@ def pruneDT(root, data, label_vector):
         prediction = root.prediction
         if error_root <= error_left + error_right:
             root.kd = True
+            root.kdtree = nn()
+            root.kdtree.fit(data, label_vector, list(range(NUM_FEATURES)), 0)
             root.left = None
             root.right = None
             return error_root
@@ -277,7 +283,7 @@ def pruneDT(root, data, label_vector):
     # go right
     # check this root 
 
-def makePrediction(root, example):
+def makePrediction(root, example, useKDTree):
     node = root
     while not node.kd:
         threshold = node.threshold
@@ -287,17 +293,24 @@ def makePrediction(root, example):
             node = node.left
         else:
             node = node.right
+    if useKDTree:
+        nearest_pt, label, dist = node.kdtree.predict(example)
+        return label
     return node.prediction
 
-def calcAccuracy(root, data, labels):
+def calcAccuracy(root, data, labels, useKDTree):
     count = 0
     for line in zip(data, labels):
         ex, label = line
-        if makePrediction(root, ex) == label:
+        if makePrediction(root, ex, useKDTree) == label:
             count += 1
     
     return Decimal(count)/len(labels)
         
+def allLeavesHaveKDTree(root):
+    if root.kd:
+        return root.kdtree is not None
+    return allLeavesHaveKDTree(root.left) and allLeavesHaveKDTree(root.right)
 
 if __name__ == "__main__":
     if (len(sys.argv) < 2):
@@ -314,9 +327,10 @@ if __name__ == "__main__":
     root = makeDT(train_matrix, train_label)
     print("Number of examples: " + str(num_examples))
     #print(root)
-    print("Pre-accuracy: " + str(calcAccuracy(root, test_matrix, test_label)))
+    print("Pre-accuracy: " + str(calcAccuracy(root, test_matrix, test_label, False)))
     pruneDT(root, test_matrix, test_label)
+    assert(allLeavesHaveKDTree(root))
     #print(root)
-    print("Post-accuracy: " + str(calcAccuracy(root, test_matrix, test_label)))
+    print("Post-accuracy: " + str(calcAccuracy(root, test_matrix, test_label, True)))
     end = timeit.default_timer()
     print("Duration: " + str(end-start) + " s")
