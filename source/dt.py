@@ -54,15 +54,9 @@ def findThresholdPoints(ft_vector, label_vector, level):
     thresholds = dict()
     pts = []
     ft_vector_len = len(ft_vector)
-    if (level == 5):
-        pass
-        #print("Ft_vector shape: " + str(ft_vector.shape))
     for i in range(1, ft_vector_len):
         if ((int(label_vector[i]) != prev_label) and not (ft_vector[i-1] == ft_vector[i])):
             t = Decimal(ft_vector[i-1] + ft_vector[i]) / Decimal(2)
-            if (level == 5):
-                #assert(type(t) == type(Decimal(1)))
-                print(t)
             thresholds[t] = i-1
             if (i == ft_vector_len-1 and ft_vector[i] == ft_vector[i-1]):
                 thresholds[t] = i
@@ -70,12 +64,8 @@ def findThresholdPoints(ft_vector, label_vector, level):
 
 
     for k in sorted(thresholds.keys()):
-        #print("thresholds[k]: " + str(thresholds[k]))
         pts.append((k, thresholds[k]))
 
-    if (level == 5):
-        pass
-        #print("[ " + str(pts) + " ]")
     return pts
 
 def log2(p):
@@ -123,7 +113,6 @@ def calcInfoGainThreshold(info_D, ft_vector, label_vector, level):
     assert(dbg_is_sorted(ft_vector))# and dbg_is_sorted(label_vector))
 
     thresholds = findThresholdPoints(ft_vector, label_vector, level)
-    #print("Found " + str(len(thresholds)) + " thresholds out of " + str(len(label_vector)))
 
     info_gain = Decimal('-1.0')
     #gain_compare = Decimal('Infinity')
@@ -133,20 +122,11 @@ def calcInfoGainThreshold(info_D, ft_vector, label_vector, level):
     best_threshold = 0
     for t in thresholds:
         t_val = t[0]
-        if (level == 6 and t_val > Decimal('0')):
-            pass
-            #print("Line 117 Threshold: " + str(t_val))
-        #print("T val: " + str(t_val))
         idx = t[1]
         d_i = idx + 1
         info_Di_left = calcEntropy(label_vector[0:d_i])
-        #print("Info Di left: " + str(info_Di_left))
         info_Di_right = calcEntropy(label_vector[d_i:])
-        if (info_Di_left == Decimal('0')):
-            pass
-        #print("Info Di right: " + str(info_Di_left))
         gain_sum = (d_i * info_Di_left + (length - d_i)*info_Di_right) / length
-        #print("Gain temp: " + str(gain_sum))
 
         gain_dt = info_D - gain_sum
 
@@ -162,8 +142,6 @@ def calcInfoGainThreshold(info_D, ft_vector, label_vector, level):
             info_gain = info_gain_tmp
             best_threshold = t_val
 
-    #print("Info gain: " + str(info_gain))
-        
     return info_gain, best_threshold
 
 def safe_add(total):
@@ -179,22 +157,12 @@ def calcInfoGain(data, label_vector, level):
     best_threshold = 0
     best_feature = 0
     for i in range(28*28-1, 0, -1):
-        #print("Feature: " + str(i))
-        #start = timeit.default_timer()
         ft_vector = data[:, i]
-        if level > 8 and i == 783:
-            pass
-            #pdb.set_trace()
         feat_gain, threshold = calcInfoGainThreshold(info_D, ft_vector, label_vector, level)
-        #print("Feature gain: " + str(feat_gain))
-        #stop = timeit.default_timer()
-        #print("Time to process a single feature: " + str(stop-start))
         if feat_gain > gain_compare:
-            #print("New best feature: " + str(i))
             gain_compare = feat_gain
             best_threshold = threshold
             best_feature = i
-    print("Best feat gain: " + str(gain_compare))
     return best_feature, best_threshold
  
 def is_single_class(labels):
@@ -210,21 +178,18 @@ def is_single_class(labels):
 # checks for base case in which for each feature
 # all values are same
 def all_features_same(data):
-    print("Number of cols: " + str(len(data[0])))
     for i in range(len(data[0])):
         col = data[:,i]
         val = col[0]
         for v in range(1, len(col)):
             if val != v:
                 return False
-    print("All values same!")
     return True
 
 def splitIndices(data, feat, threshold, length):
     left_indices = []
     right_indices = []
     for i in range(length):
-        #print(type(data[i, feat]))
         if Decimal(int(data[i, feat])) <= threshold:
             left_indices.append(i)
         else:
@@ -244,29 +209,15 @@ def makeSubTree(data, label_vector, level):
     
     # choose a split
     feat, threshold = calcInfoGain(data, label_vector, level)
-    print("Threshold: " + str(threshold))
     left_indices, right_indices = splitIndices(data, feat, threshold, len(label_vector))    
-    print("Level: " + str(level))
-    print("Feat: " + str(feat))
-    print("Data feat")
-    #print(data[:,feat])
-    print(left_indices)
     data_left = data[left_indices]
-    print("Shape left: " + str(data_left.shape))
     data_right = data[right_indices]
-    print(right_indices)
-    print("Shape right: " + str(data_right.shape))
-    if (level == 6):
-        pass
-        #print(data)
-        #pass 
     label_left = label_vector[left_indices]
     label_right = label_vector[right_indices]
  
     left_node = makeSubTree(data_left, label_left, level+1)
     right_node = makeSubTree(data_right, label_right, level+1)
 
-    print("New node created with feature: " + str(feat) + " and threshold: " + str(threshold))
     counts = np.bincount(label_vector)
     prediction = np.argmax(counts)
     curr_node = Node(left_node, right_node, feat, threshold, False, level, prediction, None)
@@ -305,8 +256,6 @@ def pruneDT(root, data, label_vector):
         pass
         #pdb.set_trace()
 
-    print("Left: " + str(left_indices))
-    print("Right: " + str(right_indices))
     data_left = data[left_indices]
     data_right = data[right_indices]
 
@@ -351,16 +300,23 @@ def calcAccuracy(root, data, labels):
         
 
 if __name__ == "__main__":
+    if (len(sys.argv) < 2):
+        print("Usage: python dt.py <number_of_examples>")
+        sys.exit("Invalid parameters")
     getcontext().prec = 15
     np.set_printoptions(threshold=np.inf)
-    train_matrix = read_input.readIDX(read_input.TRAIN_IMAGES_FILE)
-    train_label = read_input.readIDX(read_input.TRAIN_LABEL_FILE)
-    test_matrix = read_input.readIDX(read_input.TEST_IMAGES_FILE)
-    test_label = read_input.readIDX(read_input.TEST_LABEL_FILE)
-    print("Finished reading in data")
+    num_examples = int(sys.argv[1])
+    start = timeit.default_timer()
+    train_matrix = read_input.readIDX(read_input.TRAIN_IMAGES_FILE, num_examples)
+    train_label = read_input.readIDX(read_input.TRAIN_LABEL_FILE, num_examples)
+    test_matrix = read_input.readIDX(read_input.TEST_IMAGES_FILE, num_examples)
+    test_label = read_input.readIDX(read_input.TEST_LABEL_FILE, num_examples)
     root = makeDT(train_matrix, train_label)
-    print(root)
+    print("Number of examples: " + str(num_examples))
+    #print(root)
     print("Pre-accuracy: " + str(calcAccuracy(root, test_matrix, test_label)))
     pruneDT(root, test_matrix, test_label)
-    print(root)
+    #print(root)
     print("Post-accuracy: " + str(calcAccuracy(root, test_matrix, test_label)))
+    end = timeit.default_timer()
+    print("Duration: " + str(end-start) + " s")
