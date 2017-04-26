@@ -86,7 +86,7 @@ class NearestNeighborKD:
         """
         if shrink_features == 1:
             trainData = self.__shrinkDataSet(trainData)
-            features = list(range(len(trainData[0])))
+            features = list(range(features))
             self.shrink_features = 1
         elif features is None:
             features = list(range(len(trainData[0])))

@@ -8,19 +8,27 @@ from NearestNeighborKD import NearestNeighborKD as nn
 
 LABEL_VALUES = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 NUM_FEATURES = 784
+id_num = 0
+num_calls = 0
 
 class Node:
 
-    def __init__(self, left, right, ft, thresh, isLeaf,level,prediction, parent):
+    def __init__(self, left, right, ft, thresh, isLeaf,level,prediction, parent, data, labels):
         self.left = left
         self.right = right
         self.feature = ft
         self.threshold = thresh
         self.kd = isLeaf
+        self.kdtree = None
         self.level = level
         self.prediction = prediction
+        global id_num
+        id_num += 1
         self.parent = parent
-    
+        self.node_id = id_num
+        self.data = data
+        self.labels = labels
+            
     def setParent(self, parent):
         self.parent = parent
 
@@ -170,8 +178,7 @@ def calcInfoGain(data, label_vector, level):
  
 def is_single_class(labels):
     length = len(labels)
-    if (length == 0):
-        return True
+    assert(length != 0)
     label = labels[0]
     for i in range(1, length):
         if label != labels[i]:
@@ -204,12 +211,11 @@ def makeSubTree(data, label_vector, level):
     if is_single_class(label_vector) or all_features_same(data):
         counts = np.bincount(label_vector)
         prediction = np.argmax(counts) 
-        return Node(None, None, -1, 0, True,level,prediction,None)
+        n = Node(None, None, -1, 0, True,level,prediction,None, data, label_vector)
+        n.kdtree = nn()
+        n.kdtree.fit(data, label_vector, list(range(NUM_FEATURES)), 0)
+        return n
 
-    if (level > 7):
-        pass
-        #sys.exit("Still failing") 
-    
     # choose a split
     feat, threshold = calcInfoGain(data, label_vector, level)
     left_indices, right_indices = splitIndices(data, feat, threshold, len(label_vector))    
@@ -223,7 +229,7 @@ def makeSubTree(data, label_vector, level):
 
     counts = np.bincount(label_vector)
     prediction = np.argmax(counts)
-    curr_node = Node(left_node, right_node, feat, threshold, False, level, prediction, None)
+    curr_node = Node(left_node, right_node, feat, threshold, False, level, prediction, None, data, label_vector)
     left_node.setParent(curr_node)
     right_node.setParent(curr_node)
     return curr_node
@@ -247,12 +253,14 @@ def pruneDT(root, data, label_vector):
     # prunes the tree
     # filter data
     # TODO: Return error counts
+    global num_calls
+    num_calls += 1
+    
     if root.kd:
-        root.kdtree = nn()
-        root.kdtree.fit(data, label_vector, list(range(NUM_FEATURES)), 0)
         return calcErrorCount(root, label_vector)
-    #if len(data) == 0:
-    #    return 0
+    if len(data) == 0:
+        return 0
+
     feat = root.feature
     threshold = root.threshold
     left_indices, right_indices = splitIndices(data, feat, threshold, len(label_vector))
@@ -261,6 +269,7 @@ def pruneDT(root, data, label_vector):
         pass
         #pdb.set_trace()
 
+    print("Left_indices: " + str(left_indices))
     data_left = data[left_indices]
     data_right = data[right_indices]
 
@@ -271,9 +280,10 @@ def pruneDT(root, data, label_vector):
     if isLeaf(root.left) and isLeaf(root.right):
         prediction = root.prediction
         if error_root <= error_left + error_right:
+            print("Here we actually pruned")
             root.kd = True
             root.kdtree = nn()
-            root.kdtree.fit(data, label_vector, list(range(NUM_FEATURES)), 0)
+            root.kdtree.fit(root.data, root.labels, list(range(NUM_FEATURES)), 0)
             root.left = None
             root.right = None
             return error_root
@@ -310,12 +320,14 @@ def calcAccuracy(root, data, labels, useKDTree):
         
 def allLeavesHaveKDTree(root):
     if root.kd:
+        if root.kdtree is None:
+            print("Root.left: "  + str(root.left) + "Root.right: " + str(root.right) + "Node id: " + str(root.node_id))
         return root.kdtree is not None
     return allLeavesHaveKDTree(root.left) and allLeavesHaveKDTree(root.right)
 
 if __name__ == "__main__":
     if (len(sys.argv) != 4):
-        print("Usage: python dt.py <number_training> <number_tuning> <number_testing")
+        print("Usage: python dt.py <number_training> <number_tuning> <number_testing>")
         sys.exit("Invalid parameters")
     getcontext().prec = 15
     np.set_printoptions(threshold=np.inf)
@@ -349,6 +361,8 @@ if __name__ == "__main__":
     print("Pre-pruning accuracy: " + str(calcAccuracy(root, test_matrix, test_label, False)))
     pruneDT(root, tune_matrix, tune_label)
     assert(allLeavesHaveKDTree(root))
-    print("Post-pruning accuracy: " + str(calcAccuracy(root, test_matrix, test_label, True)))
+    print("Post-pruning accuracy (no k-d tree): " + str(calcAccuracy(root, test_matrix, test_label, False)))
+    print("Post-pruning accuracy: (k-d tree): " + str(calcAccuracy(root, test_matrix, test_label, True)))
+    print("Number of pruneDT calls: " + str(num_calls))
     end = timeit.default_timer()
     print("Duration: " + str(end-start) + " s")
