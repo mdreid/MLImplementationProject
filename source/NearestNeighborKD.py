@@ -127,19 +127,7 @@ class NearestNeighborKD:
             if diff ** 2 < best[2]:
                 recursive_search(away)
 
-        def exhaustive_search(here):
-            if here is None:
-                return
-
-            point, axis, label, left, right = here
-            here_sd = squared_distance(point, destination)
-            if here_sd < best[2]:
-                best[:] = point, label, here_sd
-            exhaustive_search(left)
-            exhaustive_search(right)
-
-        # recursive_search(self.treeRoot)
-        exhaustive_search(self.treeRoot)
+        recursive_search(self.treeRoot)
         return best[0], best[1], best[2]
 
     def predict(self, instance):
