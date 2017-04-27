@@ -2,6 +2,7 @@ import timeit
 import struct
 import os
 import numpy as np
+from sklearn.decomposition import IncrementalPCA
 
 # INPUT FILES
 DATASET_FOLDERS = '.' + os.sep + 'datasets'
@@ -67,6 +68,12 @@ def readIDX(fileName, num_examples=0):
         matrix = np.array(data)
         if (len(dimensions) > 1): # these are training features
             matrix = matrix.reshape(dimensions[0], dimensions[1]*dimensions[2])
+            ipca = IncrementalPCA(n_components=100, batch_size=3)
+            print(X.shape)
+            ipca.fit(X)
+            ipca.transform(X)
+            print(X.shape)
+            print(ipca)
     finally:
         if f is not None:
             f.close()
