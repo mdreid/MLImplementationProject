@@ -76,11 +76,11 @@ class NearestNeighborKD:
 
     def fit(self, trainData, labelData, features, shrink_features):
         """
-        :param trainData: train data 
+        :param trainData: train data
         :param labelData: label data
         :param features: indexes of train data features to use for training/predicting; if not set, use all features
-        :param shrink_features: because the data has 784 features, 
-        which is inefficient for k-d tree https://en.wikipedia.org/wiki/K-d_tree (High-dimensional data), turn this on 
+        :param shrink_features: because the data has 784 features,
+        which is inefficient for k-d tree https://en.wikipedia.org/wiki/K-d_tree (High-dimensional data), turn this on
         to shrink the data features to a smaller dimensional
         If shrink_features is turned on, prioritize it over the passed in "features"
         """
@@ -102,8 +102,8 @@ class NearestNeighborKD:
     def __nearest_neighbor(self, destination):
         """
         Find nearest neighbor
-        :param destination: 
-        :return: 
+        :param destination:
+        :return:
         """
         best = [None, None, float('inf')]
 
@@ -127,14 +127,26 @@ class NearestNeighborKD:
             if diff ** 2 < best[2]:
                 recursive_search(away)
 
-        recursive_search(self.treeRoot)
+        def exhaustive_search(here):
+            if here is None:
+                return
+
+            point, axis, label, left, right = here
+            here_sd = squared_distance(point, destination)
+            if here_sd < best[2]:
+                best[:] = point, label, here_sd
+            exhaustive_search(left)
+            exhaustive_search(right)
+
+        # recursive_search(self.treeRoot)
+        exhaustive_search(self.treeRoot)
         return best[0], best[1], best[2]
 
     def predict(self, instance):
         """
         Find nearest neighbor
-        :param instance: 
-        :return: 
+        :param instance:
+        :return:
         """
         if self.shrink_features == 1:
             instance = self.__shrink(instance)
