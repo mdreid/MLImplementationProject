@@ -3,6 +3,7 @@ import os
 import numpy as np
 import cPickle as pickle
 from NearestNeighborKD import NearestNeighborKD as nn
+from ExhaustiveSearch import ExhaustiveSearch as exhaustiveSearch
 
 # INPUT FILES
 DATASET_FOLDERS = '.' + os.sep + 'datasets'
@@ -113,4 +114,10 @@ if __name__ == "__main__":
         print("Training data {0} - Predict label {1} - Correct label {2}".format(i, predictlabel, label[i]))
 
 
+    exhaustiveSearch = exhaustiveSearch()
+    exhaustiveSearch.fit(train, label, None, 1)
 
+    print("Test Exhaustive search on the training data")
+    for i in range(100):
+        point, predictlabel, squared_distance = exhaustiveSearch.predict(train[i])
+        print("Training data {0} - Predict label {1} - Correct label {2}".format(i, predictlabel, label[i]))
