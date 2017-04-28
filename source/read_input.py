@@ -75,7 +75,7 @@ def readIDX(fileName, num_examples=0):
             ipca = IncrementalPCA(n_components=100)
             print(matrix.shape)
             ipca.fit(matrix)
-            ipca.transform(matrix)
+            matrix = ipca.transform(matrix)
             print(matrix.shape)
             print(ipca)
     finally:
@@ -84,8 +84,9 @@ def readIDX(fileName, num_examples=0):
 
     return matrix
 
-def readPCA():
-    return pickle.load(open(TRAIN_PCA_FILE, "rb"))
+def readPCA(num_examples):
+    matrix = pickle.load(open(TRAIN_PCA_FILE, "rb"))
+    return matrix[:num_examples]
 
 if __name__ == "__main__":
     start = timeit.default_timer()
