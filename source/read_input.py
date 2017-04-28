@@ -93,7 +93,7 @@ if __name__ == "__main__":
     REDUCED_PCA = int(sys.argv[1])
     if REDUCED_PCA == 1:
         trainData = readIDX(TRAIN_IMAGES_FILE)
-        pickle.dump(trainData, open(TRAIN_PCA_FILE, "wb"))
+        pickle.dump(trainData, open(TRAIN_PCA_FILE, "wb"), protocol=2)
         stop = timeit.default_timer()
         print("Read and PCA reduce " + TRAIN_IMAGES_FILE + " time: " + str(stop - start))
     else:
