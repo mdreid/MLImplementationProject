@@ -95,7 +95,7 @@ class NearestNeighborKD:
         self.features = features
 
         # append the label as the last column of train data
-        trainData = np.append(trainData, labelData.reshape((-1, 1)), 1)
+        self.trainData = np.append(trainData, labelData.reshape((-1, 1)), 1)
 
         self.treeRoot = self.build_tree(trainData)
 
@@ -130,7 +130,20 @@ class NearestNeighborKD:
         recursive_search(self.treeRoot)
         return best[0], best[1], best[2]
 
-    def predict(self, instance):
+    def __exhaustive_search(self, instance):
+        best = [None, None, float('inf')]
+
+        for trainInstance in self.trainData:
+          point = trainInstance[:-1]
+          label = trainInstance[-1:][0]
+          distance = squared_distance(point, instance)
+
+          if distance < best[2]:
+            best[:] = point, label, distance
+
+        return best[0], best[1], best[2]
+
+    def predict(self, instance, useKdTree = True):
         """
         Find nearest neighbor
         :param instance:
@@ -139,4 +152,8 @@ class NearestNeighborKD:
         if self.shrink_features == 1:
             instance = self.__shrink(instance)
 
-        return self.__nearest_neighbor(instance)
+        if useKdTree:
+            result = self.__nearest_neighbor(instance)
+        else:
+            result = self.__exhaustive_search(instance)
+        return result

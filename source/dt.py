@@ -28,7 +28,7 @@ class Node:
         self.node_id = id_num
         self.data = data
         self.labels = labels
-            
+
     def setParent(self, parent):
         self.parent = parent
 
@@ -86,7 +86,7 @@ def log2(p):
 
 # Info(D)
 def calcEntropy(label_vector):
-    counts = dict() 
+    counts = dict()
     for label in label_vector:
         str_label = str(label)
         if str_label in counts:
@@ -100,7 +100,7 @@ def calcEntropy(label_vector):
     for label in counts:
         prob = (Decimal(counts[label]) / total)
         H += prob * log2(prob)
-    
+
     return H * Decimal("-1")
 
 def dbg_is_sorted(v):
@@ -112,7 +112,7 @@ def dbg_is_sorted(v):
             return False
         i = e
     return True
-        
+
 
 # Calculates normalized info gain for a feature
 def calcInfoGainThreshold(info_D, ft_vector, label_vector, level):
@@ -141,7 +141,7 @@ def calcInfoGainThreshold(info_D, ft_vector, label_vector, level):
 
         gain_dt = info_D - gain_sum
 
-        split_left = (d_i / length) * log2(d_i/length) 
+        split_left = (d_i / length) * log2(d_i/length)
         split_right = ((length - d_i)/length) * log2((length - d_i)/length)
         split_dt = Decimal('-1') * safe_add(split_left + split_right)
 
@@ -175,7 +175,7 @@ def calcInfoGain(data, label_vector, level):
             best_threshold = threshold
             best_feature = i
     return best_feature, best_threshold
- 
+
 def is_single_class(labels):
     length = len(labels)
     assert(length != 0)
@@ -210,7 +210,7 @@ def splitIndices(data, feat, threshold, length):
 def makeSubTree(data, label_vector, level):
     if is_single_class(label_vector) or all_features_same(data):
         counts = np.bincount(label_vector)
-        prediction = np.argmax(counts) 
+        prediction = np.argmax(counts)
         n = Node(None, None, -1, 0, True,level,prediction,None, data, label_vector)
         n.kdtree = nn()
         n.kdtree.fit(data, label_vector, list(range(NUM_FEATURES)), 0)
@@ -218,12 +218,12 @@ def makeSubTree(data, label_vector, level):
 
     # choose a split
     feat, threshold = calcInfoGain(data, label_vector, level)
-    left_indices, right_indices = splitIndices(data, feat, threshold, len(label_vector))    
+    left_indices, right_indices = splitIndices(data, feat, threshold, len(label_vector))
     data_left = data[left_indices]
     data_right = data[right_indices]
     label_left = label_vector[left_indices]
     label_right = label_vector[right_indices]
- 
+
     left_node = makeSubTree(data_left, label_left, level+1)
     right_node = makeSubTree(data_right, label_right, level+1)
 
@@ -255,7 +255,7 @@ def pruneDT(root, data, label_vector):
     # TODO: Return error counts
     global num_calls
     num_calls += 1
-    
+
     if root.kd:
         return calcErrorCount(root, label_vector)
     if len(data) == 0:
@@ -289,10 +289,10 @@ def pruneDT(root, data, label_vector):
             return error_root
 
     return error_left + error_right
-        
+
     # go left
     # go right
-    # check this root 
+    # check this root
 
 def makePrediction(root, example, useKDTree):
     node = root
@@ -315,9 +315,9 @@ def calcAccuracy(root, data, labels, useKDTree):
         ex, label = line
         if makePrediction(root, ex, useKDTree) == label:
             count += 1
-    
+
     return Decimal(count)/len(labels)
-        
+
 def allLeavesHaveKDTree(root):
     if root.kd:
         if root.kdtree is None:
@@ -331,24 +331,24 @@ if __name__ == "__main__":
         sys.exit("Invalid parameters")
     getcontext().prec = 15
     np.set_printoptions(threshold=np.inf)
-    
+
     num_training = int(sys.argv[1])
     num_tuning = int(sys.argv[2])
     num_testing = int(sys.argv[3])
-    
+
     num_examples = num_training + num_tuning + num_testing
-    
+
     start = timeit.default_timer()
     start_matrix = read_input.readIDX(read_input.TRAIN_IMAGES_FILE, num_examples)
     start_label = read_input.readIDX(read_input.TRAIN_LABEL_FILE, num_examples)
 
     train_matrix = start_matrix[0:num_training]
     train_label = start_label[0:num_training]
-    
+
     tune_start = num_training
     tune_matrix = start_matrix[tune_start:(tune_start + num_tuning)]
     tune_label = start_label[tune_start:(tune_start + num_tuning)]
-    
+
     test_start = tune_start + num_tuning
     test_matrix = start_matrix[test_start:(test_start + num_testing)]
     test_label = start_label[test_start:(test_start + num_testing)]
