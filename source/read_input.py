@@ -2,6 +2,8 @@ import timeit
 import struct
 import os
 import numpy as np
+import sys
+import cPickle as pickle
 from sklearn.decomposition import IncrementalPCA
 
 # INPUT FILES
@@ -10,6 +12,8 @@ TRAIN_IMAGES_FILE = DATASET_FOLDERS + os.sep + 'train-images-idx3-ubyte'
 TRAIN_LABEL_FILE = DATASET_FOLDERS + os.sep + 'train-labels-idx1-ubyte'
 TEST_IMAGES_FILE = DATASET_FOLDERS + os.sep + 't10k-images.idx3-ubyte'
 TEST_LABEL_FILE = DATASET_FOLDERS + os.sep + 't10k-labels.idx1-ubyte'
+
+TRAIN_PCA_FILE = DATASET_FOLDERS + os.sep + 't10k-labels.idx1-ubyte_PCA'
 
 # Read the data matrix whose dimensions are in "dimensions" array
 # Recursion!!!
@@ -68,11 +72,11 @@ def readIDX(fileName, num_examples=0):
         matrix = np.array(data)
         if (len(dimensions) > 1): # these are training features
             matrix = matrix.reshape(dimensions[0], dimensions[1]*dimensions[2])
-            ipca = IncrementalPCA(n_components=100, batch_size=3)
-            print(X.shape)
-            ipca.fit(X)
-            ipca.transform(X)
-            print(X.shape)
+            ipca = IncrementalPCA(n_components=100)
+            print(matrix.shape)
+            ipca.fit(matrix)
+            ipca.transform(matrix)
+            print(matrix.shape)
             print(ipca)
     finally:
         if f is not None:
@@ -80,11 +84,22 @@ def readIDX(fileName, num_examples=0):
 
     return matrix
 
+def readPCA():
+    return pickle.load(open(TRAIN_PCA_FILE, "rb"))
+
 if __name__ == "__main__":
     start = timeit.default_timer()
-    trainData = readIDX(TRAIN_IMAGES_FILE)
-    stop = timeit.default_timer()
-    print("Read " + TRAIN_IMAGES_FILE + " time: " + str(stop - start))
+
+    REDUCED_PCA = int(sys.argv[1])
+    if REDUCED_PCA == 1:
+        trainData = readIDX(TRAIN_IMAGES_FILE)
+        pickle.dump(trainData, open(TRAIN_PCA_FILE, "wb"))
+        stop = timeit.default_timer()
+        print("Read and PCA reduce " + TRAIN_IMAGES_FILE + " time: " + str(stop - start))
+    else:
+        trainData = pickle.load(open(TRAIN_PCA_FILE, "rb"))
+        stop = timeit.default_timer()
+        print("Read the reduced version " + TRAIN_IMAGES_FILE + " time: " + str(stop - start))
     
     start = timeit.default_timer()
     labelData = readIDX(TRAIN_LABEL_FILE)
