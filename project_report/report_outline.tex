@@ -402,7 +402,7 @@
 	
 	
 	\begin{abstract}
-		In this project, we investigate a potential improvement to decision tree learning by presenting a hybrid classifier that combines decision tree and k-d tree. In this hybrid classifier, the leaf nodes of the decision tree make predictions using k-d tree algorithm instead of the normal majority-based approach. The experimental section shows the results obtained by this new algorithm applied to the MNIST Handwritten Digit Dataset. ---- TODO: Make conclusion here based on the result compared with other algorithm ----
+		For our project we intend to investigate a potential improvement to decision tree learning. For most decision tree learning algorithms, the leaf nodes encode a majority-based prediction (that is, the leaf node predicts whatever label is held by a majority of the training examples that made it to that leaf node). We would like to instead store all the training examples that make it to a leaf node and do nearest neighbor predictions with those example sets.
 		%\boldmath
 	%	\blindtext[1]
 	\end{abstract}
@@ -415,7 +415,7 @@
 	
 	% Note that keywords are not normally used for peerreview papers.
 	\begin{IEEEkeywords}
-		Classifier Combination, Decision Tree, K-D Tree, Hybrid Classifier, Dimensionality Reduction.
+		Entropy, mutual information, KD tree, dimensionality reduction.
 	\end{IEEEkeywords}
 	
 	
@@ -437,7 +437,11 @@
 	
 	\section{Introduction}
 	%\blindtext
+	Classification is the problem of identifying the category to which observations belong, given that the identity of the category is unknown at the beginning. A classification algorithm required to place these observations or instances into groups based on information of each of the object’s attribute. A great deal of algorithms have been proposed in the last decades for classifying data in a variety of domains.
 	
+	Decision tree learning is one of the most widely used and practical methods for inductive inference. [1] --- putting some shortcomings of decision tree here => think of adding k-d tree to improve. ---
+		
+	The final decision tree nodes contain univariate splits as regular decision trees, but the leaf nodes contain with nearest neighbor search with KD trees, which is a variant of standard Nearest Neighbor classifier. Our results on a handwritten digit dataset shows that this hybrid approach has clear advantages when compared against its counterpart, Decision Tree.
 	\section{Related Works}
 %	\blindtext
 	\section{Methods}
