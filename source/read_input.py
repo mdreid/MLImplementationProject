@@ -35,6 +35,20 @@ def readDimension(f, dimensions, currentDimension, dataTypeSize, dataTypeFormat)
         return data
 
 
+def readInputData(trainName, testName, num_train, num_tune, num_test):
+    num_examples = num_train + num_tune
+    mat_train = readIDX(trainName, num_examples)
+    mat_test = readIDX(testName, num_test)
+    mat_train = mat_train.reshape(num_examples, len(mat_train[0]) * len(mat_train[0][0]))
+    mat_test = mat_test.reshape(num_test, len(mat_test[0]) * len(mat_test[0][0]))
+    ipca = IncrementalPCA(n_components=100)
+    ipca.fit(mat_train)
+    mat_train = ipca.transform(mat_train)
+    mat_test = ipca.transform(mat_test)
+    print(mat_train.shape)
+    print(ipca)
+    return mat_train, mat_test
+
 def readIDX(fileName, num_examples=0):
     f = None
     try:
@@ -70,14 +84,6 @@ def readIDX(fileName, num_examples=0):
         print(dimensions)
         data = readDimension(f, dimensions, 0, dataTypeSize, dataTypeFormat)
         matrix = np.array(data)
-        if (len(dimensions) > 1): # these are training features
-            matrix = matrix.reshape(dimensions[0], dimensions[1]*dimensions[2])
-            ipca = IncrementalPCA(n_components=100)
-            print(matrix.shape)
-            ipca.fit(matrix)
-            matrix = ipca.transform(matrix)
-            print(matrix.shape)
-            print(ipca)
     finally:
         if f is not None:
             f.close()

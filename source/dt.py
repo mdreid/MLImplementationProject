@@ -352,7 +352,8 @@ if __name__ == "__main__":
 
     start = timeit.default_timer()
     #start_matrix = read_input.readIDX(read_input.TRAIN_IMAGES_FILE, num_examples)
-    start_matrix = read_input.readPCA(num_examples)
+    #start_matrix = read_input.readPCA(num_examples)
+    start_matrix, test_matrix = read_input.readInputData(read_input.TRAIN_IMAGES_FILE, read_input.TEST_IMAGES_FILE, num_training, num_tuning, num_testing)
     #print(type(start_matrix[0][0]))
     #print("This is start matrix")
     #print(start_matrix.shape)
@@ -361,25 +362,15 @@ if __name__ == "__main__":
     #print("End")
     global NUM_FEATURES
     NUM_FEATURES = len(start_matrix[0])
-    start_label = read_input.readIDX(read_input.TRAIN_LABEL_FILE, num_examples)
+    start_label = read_input.readIDX(read_input.TRAIN_LABEL_FILE, num_training + num_tuning)
+    test_label = read_input.readIDX(read_input.TEST_LABEL_FILE, num_testing)
 
     train_matrix = start_matrix[0:num_training]
     train_label = start_label[0:num_training]
 
     tune_start = num_training
     tune_matrix = start_matrix[tune_start:(tune_start + num_tuning)]
-    #print(tune_matrix.shape)
     tune_label = start_label[tune_start:(tune_start + num_tuning)]
-    #print(tune_label.shape)
-
-    test_start = tune_start + num_tuning
-    test_matrix = start_matrix[test_start:(test_start + num_testing)]
-    #print(test_matrix.shape)
-    test_label = start_label[test_start:(test_start + num_testing)]
-    #print(test_label.shape)
-
-    #test_matrix = tune_matrix
-    #test_label = tune_label
 
     root = makeDT(train_matrix, train_label)
     #print("Size of training set: " + str(num_training))
