@@ -6,19 +6,19 @@ import numpy as np
 Node = namedtuple("Node", 'point axis label left right')
 
 
-def squared_distance(trainData, testData):
-    d = 0
-    n = len(testData)  # trainData has the last column as the label, so use testData's len instead
-    for i in range(n):
-        tmp = trainData[i] - testData[i]
-        d += tmp*tmp
-    return d
 
 
 class NearestNeighborKD:
     # The number of features after shrank, can be dynamically set based on the number of training data,
     # but use 28 for now, which is the height and width of an image
     ShrinkSize = 28
+    def squared_distance(self, trainData, testData):
+        d = 0
+        n = len(self.features)  # trainData has the last column as the label, so use testData's len instead
+        for i in range(n):
+            tmp = trainData[i] - testData[i]
+            d += tmp*tmp
+        return d
 
     def __init__(self):
         self.treeRoot = None
@@ -26,36 +26,6 @@ class NearestNeighborKD:
         self.shrink_features = 0
         self.trainData = None
         self.labelData = None
-
-    def __shrink(self, instance):
-        """
-        Create a new smaller set of features by summing continuous features
-        :param instance: single instance
-        :return: train data with shrank features
-        """
-        oldFeatureSize = len(instance)
-        newFeatureSize = NearestNeighborKD.ShrinkSize
-        groupSize = oldFeatureSize / newFeatureSize
-        shrankInstance = []
-        for j in range(newFeatureSize):
-            startIndex = j * groupSize
-            val = 0
-            for k in range(groupSize):
-                if startIndex + k < oldFeatureSize:
-                    val += instance[startIndex + k]
-            shrankInstance.append(val)
-        return np.array(shrankInstance)
-
-    def __shrinkDataSet(self, trainDataSet):
-        """
-        Create a new smaller set of features by summing continuous features
-        :param train: train data
-        :return: train data with shrank features
-        """
-        data = []
-        for i in range(len(trainDataSet)):
-            data.append(self.__shrink(trainDataSet[i]))
-        return np.array(data)
 
     def build_tree(self, instances, axis=0):
         if instances is None or len(instances) == 0:
@@ -68,13 +38,16 @@ class NearestNeighborKD:
         median_idx = len(instances) // 2
         median_point = instances[median_idx]
         median_label = median_point[-1]
+        #print("Point: " + str(median_point))
+        #print("Label: " + str(median_label))
+        #print("Type of label: " + str(type(median_label)))
 
         next_axis = (axis + 1) % len(self.features)
         return Node(median_point, axis, median_label,
                     self.build_tree(instances[:median_idx], next_axis),
                     self.build_tree(instances[median_idx + 1:], next_axis))
 
-    def fit(self, trainData, labelData, features, shrink_features):
+    def fit(self, trainData, labelData, features):
         """
         :param trainData: train data
         :param labelData: label data
@@ -83,21 +56,26 @@ class NearestNeighborKD:
         which is inefficient for k-d tree https://en.wikipedia.org/wiki/K-d_tree (High-dimensional data), turn this on
         to shrink the data features to a smaller dimensional
         If shrink_features is turned on, prioritize it over the passed in "features"
-        """
+        
         if shrink_features == 1:
             trainData = self.__shrinkDataSet(trainData)
             features = list(range(features))
             self.shrink_features = 1
-        elif features is None:
+        """
+        if features is None:
             features = list(range(len(trainData[0])))
 
-        self.shrink_features = shrink_features
+        #print("Label data: " + str(labelData))
+
+        #self.shrink_features = shrink_features
         self.features = features
+        #print("Features: " + str(features))
 
         # append the label as the last column of train data
         self.trainData = np.append(trainData, labelData.reshape((-1, 1)), 1)
+        #print("Train Data: " + str(self.trainData[0]))
 
-        self.treeRoot = self.build_tree(trainData)
+        self.treeRoot = self.build_tree(self.trainData)
 
     def __nearest_neighbor(self, destination):
         """
@@ -116,11 +94,11 @@ class NearestNeighborKD:
                 return
             point, axis, label, left, right = here
 
-            here_sd = squared_distance(point, destination)
+            here_sd = self.squared_distance(point, destination)
             if here_sd < best[2]:
                 best[:] = point, label, here_sd
 
-            diff = destination[self.features[axis]] - point[self.features[axis]]
+            diff = destination[axis] - point[axis]
             close, away = (left, right) if diff <= 0 else (right, left)
 
             recursive_search(close)
@@ -136,7 +114,7 @@ class NearestNeighborKD:
         for trainInstance in self.trainData:
           point = trainInstance[:-1]
           label = trainInstance[-1:][0]
-          distance = squared_distance(point, instance)
+          distance = self.squared_distance(point, instance)
 
           if distance < best[2]:
             best[:] = point, label, distance
@@ -148,9 +126,9 @@ class NearestNeighborKD:
         Find nearest neighbor
         :param instance:
         :return:
-        """
         if self.shrink_features == 1:
             instance = self.__shrink(instance)
+        """
 
         if useKdTree:
             result = self.__nearest_neighbor(instance)

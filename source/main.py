@@ -105,7 +105,7 @@ def loadData():
 if __name__ == "__main__":
     train, label = loadData()
     knn = nn()
-    knn.fit(train, label, None, 1)
+    knn.fit(train, label, None)
 
     print("Test on the training data")
     for i in range(100):

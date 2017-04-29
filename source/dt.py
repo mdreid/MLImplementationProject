@@ -207,9 +207,11 @@ def splitIndices(data, feat, threshold, length):
 
     return left_indices, right_indices
 
-def makeSubTree(data, label_vector, level):
+def makeSubTree(data, label_vector, level, prev_data_size):
     #print("Making subtree " + str(level))
         # choose a split
+    assert(len(data) < prev_data_size)
+    prev_data_size = len(data)
     feat, threshold = calcInfoGain(data, label_vector, level)
     
     left_indices, right_indices = splitIndices(data, feat, threshold, len(label_vector))
@@ -219,7 +221,7 @@ def makeSubTree(data, label_vector, level):
         prediction = np.argmax(counts)
         n = Node(None, None, -1, 0, True,level,prediction,None, data, label_vector)
         n.kdtree = nn()
-        n.kdtree.fit(data, label_vector, list(range(NUM_FEATURES)), 0)
+        n.kdtree.fit(data, label_vector, list(range(NUM_FEATURES)))
         return n
 
 
@@ -228,8 +230,8 @@ def makeSubTree(data, label_vector, level):
     label_left = label_vector[left_indices]
     label_right = label_vector[right_indices]
 
-    left_node = makeSubTree(data_left, label_left, level+1)
-    right_node = makeSubTree(data_right, label_right, level+1)
+    left_node = makeSubTree(data_left, label_left, level+1, prev_data_size)
+    right_node = makeSubTree(data_right, label_right, level+1, prev_data_size)
 
     counts = np.bincount(label_vector)
     prediction = np.argmax(counts)
@@ -239,7 +241,7 @@ def makeSubTree(data, label_vector, level):
     return curr_node
 
 def makeDT(data, label_vector):
-    root = makeSubTree(data, label_vector, 1)
+    root = makeSubTree(data, label_vector, 1, len(data)+1)
     return root
 
 def isLeaf(node):
@@ -287,7 +289,7 @@ def pruneDT(root, data, label_vector):
             #print("Here we actually pruned")
             root.kd = True
             root.kdtree = nn()
-            root.kdtree.fit(root.data, root.labels, list(range(NUM_FEATURES)), 0)
+            root.kdtree.fit(root.data, root.labels, list(range(NUM_FEATURES)))
             root.left = None
             root.right = None
             return error_root
@@ -310,14 +312,20 @@ def makePrediction(root, example, useKDTree):
             node = node.right
     if useKDTree:
         nearest_pt, label, dist = node.kdtree.predict(example)
+        label = int(label)
+        #print("Nearest point: " + str(nearest_pt))
+        print("Label: " + str(label))
+        #print("Distance: " + str(dist))
         return label
     return node.prediction
 
 def calcAccuracy(root, data, labels, useKDTree):
     count = 0
+    print("Using kd tree?: " + str(useKDTree))
     for line in zip(data, labels):
         ex, label = line
         prediction = makePrediction(root, ex, useKDTree)
+        #print(type(prediction))
         print(str(prediction) + "," + str(label))
         if prediction  == label:
             count += 1
@@ -343,8 +351,9 @@ if __name__ == "__main__":
     num_examples = num_training + num_tuning + num_testing
 
     start = timeit.default_timer()
-    start_matrix = read_input.readIDX(read_input.TRAIN_IMAGES_FILE, num_examples)
-    #start_matrix = read_input.readPCA(num_examples)
+    #start_matrix = read_input.readIDX(read_input.TRAIN_IMAGES_FILE, num_examples)
+    start_matrix = read_input.readPCA(num_examples)
+    #print(type(start_matrix[0][0]))
     #print("This is start matrix")
     #print(start_matrix.shape)
     #pdb.set_trace()
@@ -382,4 +391,5 @@ if __name__ == "__main__":
     #print("Number of pruneDT calls: " + str(num_calls))
     end = timeit.default_timer()
     #print("Duration: " + str(end-start) + " s")
-    #calcAccuracy(root, test_matrix, test_label, True)
+    accuracy = calcAccuracy(root, test_matrix, test_label, True)
+    print("Accuracy: " + str(accuracy))
