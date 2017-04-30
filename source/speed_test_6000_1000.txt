@@ -1,0 +1,9 @@
+**********USING KD-TREE**********
+Training time for 6000 instances: 0:0:0'51.4014544543"
+Accuracy: 0.92
+Testing time for 1000 instances: 0:3:48'128.32722863"
+
+**********USING EXHAUSTIVE-SEARCH**********
+Training time for 6000 instances: 0:0:0'6.7199312864"
+Accuracy: 0.92
+Testing time for 1000 instances: 0:4:29'137.812894473"
