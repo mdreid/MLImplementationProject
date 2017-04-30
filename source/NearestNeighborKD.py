@@ -47,20 +47,12 @@ class NearestNeighborKD:
                     self.build_tree(instances[:median_idx], next_axis),
                     self.build_tree(instances[median_idx + 1:], next_axis))
 
-    def fit(self, trainData, labelData, features):
+    def fit(self, trainData, labelData, features, useKdTree = True):
         """
         :param trainData: train data
         :param labelData: label data
         :param features: indexes of train data features to use for training/predicting; if not set, use all features
-        :param shrink_features: because the data has 784 features,
-        which is inefficient for k-d tree https://en.wikipedia.org/wiki/K-d_tree (High-dimensional data), turn this on
-        to shrink the data features to a smaller dimensional
-        If shrink_features is turned on, prioritize it over the passed in "features"
-        
-        if shrink_features == 1:
-            trainData = self.__shrinkDataSet(trainData)
-            features = list(range(features))
-            self.shrink_features = 1
+        :param useKdTree: whether or not to build kd tree
         """
         if features is None:
             features = list(range(len(trainData[0])))
@@ -75,7 +67,10 @@ class NearestNeighborKD:
         self.trainData = np.append(trainData, labelData.reshape((-1, 1)), 1)
         #print("Train Data: " + str(self.trainData[0]))
 
-        self.treeRoot = self.build_tree(self.trainData)
+        if useKdTree:
+            self.treeRoot = self.build_tree(self.trainData)
+        else:
+            self.treeRoot = None
 
     def __nearest_neighbor(self, destination):
         """
