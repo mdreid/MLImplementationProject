@@ -319,11 +319,13 @@ def makePrediction(root, example, useKDTree):
         return label
     return node.prediction
 
-def calcAccuracy(root, data, labels, useKDTree):
+def calcAccuracy(root, data, labels, useKDTree, printPredictions=False):
     count = 0
     for line in zip(data, labels):
         ex, label = line
         prediction = makePrediction(root, ex, useKDTree)
+        if printPredictions:
+            print("Prediction: " + str(prediction) + " Label: " + str(label))
         if prediction  == label:
             count += 1
 
@@ -357,7 +359,6 @@ if __name__ == "__main__":
 
     num_examples = num_training + num_tuning + num_testing
 
-    start = timeit.default_timer()
     #start_matrix = read_input.readIDX(read_input.TRAIN_IMAGES_FILE, num_examples)
     #start_matrix = read_input.readPCA(num_examples)
     start_matrix, test_matrix = read_input.readInputData(read_input.TRAIN_IMAGES_FILE, read_input.TEST_IMAGES_FILE, num_training, num_tuning, num_testing)
@@ -379,18 +380,22 @@ if __name__ == "__main__":
     tune_matrix = start_matrix[tune_start:(tune_start + num_tuning)]
     tune_label = start_label[tune_start:(tune_start + num_tuning)]
 
+    start = timeit.default_timer()
     root = makeDT(train_matrix, train_label)
+    end = timeit.default_timer()
+    print("Build DT duration: " + str(end-start) + " s")
     print("Size of training set: " + str(num_training))
     print("Pre-pruning accuracy: " + str(calcAccuracy(root, test_matrix, test_label, False)))
     print("Size of pre-pruned tree: " + str(calcTreeSize(root)))
     print("Height of pre-pruned tree: " + str(calcTreeHeight(root)))
+    start = timeit.default_timer()
     pruneDT(root, tune_matrix, tune_label)
     end = timeit.default_timer()
+    print("Prune DT duration: " + str(end-start) + " s")
     assert(allLeavesHaveKDTree(root))
     print("Post-pruning accuracy (no k-d tree): " + str(calcAccuracy(root, test_matrix, test_label, False)))
     print("Size of post-pruned tree: " + str(calcTreeSize(root)))
     print("Height of post-pruned tree: " + str(calcTreeHeight(root)))
-        #print("Number of pruneDT calls: " + str(num_calls))
-    print("Duration: " + str(end-start) + " s")
-    accuracy = calcAccuracy(root, test_matrix, test_label, True)
+    #print("Number of pruneDT calls: " + str(num_calls))
+    accuracy = calcAccuracy(root, test_matrix, test_label, True, printPredictions=True)
     print("Accuracy with k-d tree: " + str(accuracy))
