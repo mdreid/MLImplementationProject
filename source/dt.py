@@ -314,24 +314,31 @@ def makePrediction(root, example, useKDTree):
         nearest_pt, label, dist = node.kdtree.predict(example)
         label = int(label)
         #print("Nearest point: " + str(nearest_pt))
-        print("Label: " + str(label))
+        #print("Label: " + str(label))
         #print("Distance: " + str(dist))
         return label
     return node.prediction
 
 def calcAccuracy(root, data, labels, useKDTree):
     count = 0
-    print("Using kd tree?: " + str(useKDTree))
     for line in zip(data, labels):
         ex, label = line
         prediction = makePrediction(root, ex, useKDTree)
-        #print(type(prediction))
-        print(str(prediction) + "," + str(label))
         if prediction  == label:
             count += 1
 
     return Decimal(count)/len(labels)
 
+def calcTreeHeight(root):
+    if root is None:
+        return 0
+    return max(calcTreeHeight(root.left), calcTreeHeight(root.right)) + 1
+
+def calcTreeSize(root):
+    if root is None:
+        return 0
+    return calcTreeSize(root.left) + calcTreeSize(root.right) + 1
+    
 def allLeavesHaveKDTree(root):
     if root.kd:
         return root.kdtree is not None
@@ -339,7 +346,7 @@ def allLeavesHaveKDTree(root):
 
 if __name__ == "__main__":
     if (len(sys.argv) != 4):
-        #print("Usage: python dt.py <number_training> <number_tuning> <number_testing>")
+        print("Usage: python dt.py <number_training> <number_tuning> <number_testing>")
         sys.exit("Invalid parameters")
     getcontext().prec = 15
     np.set_printoptions(threshold=np.inf)
@@ -373,14 +380,17 @@ if __name__ == "__main__":
     tune_label = start_label[tune_start:(tune_start + num_tuning)]
 
     root = makeDT(train_matrix, train_label)
-    #print("Size of training set: " + str(num_training))
-    #print("Pre-pruning accuracy: " + str(calcAccuracy(root, test_matrix, test_label, False)))
+    print("Size of training set: " + str(num_training))
+    print("Pre-pruning accuracy: " + str(calcAccuracy(root, test_matrix, test_label, False)))
+    print("Size of pre-pruned tree: " + str(calcTreeSize(root)))
+    print("Height of pre-pruned tree: " + str(calcTreeHeight(root)))
     pruneDT(root, tune_matrix, tune_label)
-    assert(allLeavesHaveKDTree(root))
-   #print("Post-pruning accuracy (no k-d tree): " + str(calcAccuracy(root, test_matrix, test_label, False)))
-    #print("Post-pruning accuracy: (k-d tree): " + str(calcAccuracy(root, test_matrix, test_label, True)))
-    #print("Number of pruneDT calls: " + str(num_calls))
     end = timeit.default_timer()
-    #print("Duration: " + str(end-start) + " s")
+    assert(allLeavesHaveKDTree(root))
+    print("Post-pruning accuracy (no k-d tree): " + str(calcAccuracy(root, test_matrix, test_label, False)))
+    print("Size of post-pruned tree: " + str(calcTreeSize(root)))
+    print("Height of post-pruned tree: " + str(calcTreeHeight(root)))
+        #print("Number of pruneDT calls: " + str(num_calls))
+    print("Duration: " + str(end-start) + " s")
     accuracy = calcAccuracy(root, test_matrix, test_label, True)
-    print("Accuracy: " + str(accuracy))
+    print("Accuracy with k-d tree: " + str(accuracy))
