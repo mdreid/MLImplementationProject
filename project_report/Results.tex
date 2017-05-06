@@ -27,3 +27,62 @@ To assess the classifier's performance for each handwritten digit, we used the p
 	\caption{Confusion matrix for standard decision trees.  Note that horizontal indices correspond to the actual labels of the handwritten digits while vertical indices correspond to the labels predicted by the tree.}
 	\label{table:no_kd_confusion}
 \end{table}
+
+\begin{table}
+	\centering
+	\begin{tabular}{rrr}
+		Digit &   Precision &      Recall \\
+		\hline
+		0 &   0.955844  & 0.37551     \\
+		1 &   0.220399  & 0.993833    \\
+		2 &   0         & 0           \\
+		3 &   1         & 0.000990099 \\
+		4 &   0.111111  & 0.00101833  \\
+		5 &   0.0909091 & 0.00112108  \\
+		6 &   0.448083  & 0.585595    \\
+		7 &   0.276463  & 0.863813    \\
+		8 &   0.666667  & 0.00205339  \\
+		9 &   1         & 0.00099108  \\
+	\end{tabular}
+	\caption{Precision and recall for standard decision trees, for each handwritten digit.}
+	\label{table:no_kd_precision_recall}
+\end{table}
+
+\begin{table}
+	\begin{tabular}{l|llllllllll}
+		&   '0' &   '1' &   '2' &   '3' &   '4' &   '5' &   '6' &   '7' &   '8' &   '9' \\
+		\hline
+		'0' &   940 &     3 &    12 &     0 &     1 &    11 &     8 &     2 &     8 &     7 \\
+		'1' &     3 &  1125 &     7 &     1 &     9 &     4 &     3 &    22 &     2 &     7 \\
+		'2' &    10 &     2 &   965 &     9 &     1 &     0 &     0 &     7 &     7 &     2 \\
+		'3' &     0 &     2 &    12 &   944 &     0 &    25 &     1 &     1 &    33 &     7 \\
+		'4' &     4 &     0 &     5 &     1 &   909 &     1 &     4 &     4 &     9 &    16 \\
+		'5' &    12 &     0 &     1 &    22 &     0 &   813 &     2 &     1 &    16 &     3 \\
+		'6' &     8 &     3 &     3 &     3 &     9 &    19 &   938 &     0 &     7 &     0 \\
+		'7' &     3 &     0 &    20 &     7 &     7 &     8 &     0 &   975 &     6 &    19 \\
+		'8' &     0 &     0 &     6 &    12 &     2 &     7 &     2 &     0 &   864 &     5 \\
+		'9' &     0 &     0 &     1 &    11 &    44 &     4 &     0 &    16 &    22 &   943 \\
+	\end{tabular}
+	\caption{Confusion matrix for new hybrid decision trees.  Note that horizontal indices correspond to the actual labels of the handwritten digits while vertical indices correspond to the labels predicted by the tree.}
+	\label{table:with_kd_confusion}
+\end{table}
+
+\begin{table}
+	\centering
+	\begin{tabular}{rrr}
+		\hline
+		Digit &   Precision &   Recall \\
+		0 &    0.947581 & 0.959184 \\
+		1 &    0.950972 & 0.991189 \\
+		2 &    0.962114 & 0.935078 \\
+		3 &    0.920976 & 0.934653 \\
+		4 &    0.95383  & 0.925662 \\
+		5 &    0.934483 & 0.911435 \\
+		6 &    0.947475 & 0.979123 \\
+		7 &    0.933014 & 0.948444 \\
+		8 &    0.962138 & 0.887064 \\
+		9 &    0.90586  & 0.934589 \\
+	\end{tabular}
+	\caption{Precision and recall for hybrid decision trees, for each handwritten digit.}
+	\label{table:with_kd_precision_recall}
+\end{table}
