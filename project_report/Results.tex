@@ -11,6 +11,8 @@ To assess the classifier's performance for each handwritten digit, we used the p
 
 Looking at \ref{table:with_kd_confusion} and \ref{table:with_kd_precision_recall} we can see that the handwritten 2 is actually classifiable (has non-zero precision and recall) by the hybrid classifier.  Additionally, \ref{table:with_kd_precision_recall} does not exhibit those unusually low values of precision and recall
 
+Interestingly, the size and heights of the generated decision trees varies widely with the number of training examples, as shown in \ref{table:dt_sizes}.
+
 \begin{table}
 	\begin{tabular}{l|llllllllll}
 		&   '0' &   '1' &   '2' &   '3' &   '4' &   '5' &   '6' &   '7' &   '8' &   '9' \\
@@ -87,4 +89,19 @@ Looking at \ref{table:with_kd_confusion} and \ref{table:with_kd_precision_recall
 	\end{tabular}
 	\caption{Precision and recall for hybrid decision trees, for each handwritten digit.}
 	\label{table:with_kd_precision_recall}
+\end{table}
+
+\begin{table}
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|}
+        \hline
+        & 100 & 500 & 1000 & 5000 & 10000 \\
+        \hline
+        Unpruned & 57 (18) & 153 (46) & 213 (41) & 275 (91) & 91 (17) \\
+        \hline
+        Pruned  & 45 (16) & 105 (44)  & 177 (39) & 241 (91) & 65 (16) \\
+        \hline
+    \end{tabular}
+    \caption{Size in number of nodes of unpruned and pruned decision trees built for various numbers of training examples. The height of each decision tree is in parentheses.}
+    \label{table:dt_sizes}
 \end{table}
