@@ -7,7 +7,9 @@ After running our hybrid decision tree algorithm over the various settings of tr
 	\label{fig:learn_curve}
 \end{figure}
 
-To assess the classifier's performance for each handwritten digit, we used the predictions from the setting with 10000 training examples (1000 tuning examples and 10000 testing) to generate a confusion matrix and calculate the values of precision and recall for each digit.  Again, we repeated this for both standard and hybrid decision trees.
+To assess the classifier's performance for each handwritten digit, we used the predictions from the setting with 10000 training examples (1000 tuning examples and 10000 testing) to generate a confusion matrix and calculate the values of precision and recall for each digit.  Again, we repeated this for both standard and hybrid decision trees.  Looking at \ref{table:no_kd_precision_recall} we can see the digit 2 was never predicted by the standard decision tree.  Other digits, such as 9, exhibit extremely low values of recall. Looking at the confusion matrix in \ref{table:no_kd_confusion} we see that the standard decision tree classifier most often predicted the digit 7 for a handwritten 9.  We also have some digits the exhibit unusually low precision coupled with good recall.  For example, the standard decision tree classifier often predicted 1 when presented with examples of other handwritten digits.
+
+Looking at \ref{table:with_kd_confusion} and \ref{table:with_kd_precision_recall} we can see that the handwritten 2 is actually classifiable (has non-zero precision and recall) by the hybrid classifier.  Additionally, \ref{table:with_kd_precision_recall} does not exhibit those unusually low values of precision and recall
 
 \begin{table}
 	\begin{tabular}{l|llllllllll}
