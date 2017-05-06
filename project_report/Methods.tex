@@ -19,4 +19,4 @@ Exhaustive Search is the naive version of $k$-NN. That is, we directly store all
  Hence, the time complexity to find an instance's nearest neighbor using Exhaustive Search is $O(N)$. For this reason, the prediction time can be very long if the training set is large. This is why we also implement $k$-d tree in the next section to find an instance nearest neighbor
 
 \subsubsection{$k$-d Tree}
-The $k$-d tree version of $k$-NN stores the training instances in a $k$-d tree data structure during the training step, and then uses this tree to find the nearest neighbor to an instance during the predicting step. The time complexity to find an instance's nearest neighbor can be greatly improved by $k$-d Tree to an average of $O(log_2N)$
+The $k$-d tree version of $k$-NN stores the training instances in a $k$-d tree data structure during the training step, and then uses this tree to find the nearest neighbor to an instance during the predicting step. The time complexity to find an instance's nearest neighbor can be greatly improved by $k$-d Tree to an average of $O(log_2N)$. Our implementation for $k$-d tree is based on this wiki page \cite{KDWiki}.
