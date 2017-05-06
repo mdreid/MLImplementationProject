@@ -1,10 +1,20 @@
 import sys
 import string
+import numpy as np
 
+from tabulate import tabulate
 
     
 def computePrecisionRecall(f, header):
+
+    results = np.zeros((10, 10))
+    table_header = ['\'' + str(x) + '\'' for x in range(0, 9+1)]
+    table_header.insert(0, ' ')
+    print(table_header)
+    #print(results)
+    # old stuff
     print(header)
+    #print(tabulate(results, tablefmt="latex", floatfmt=".2f"))
     true_positive = dict()
     false_positive = dict()
 
@@ -21,6 +31,8 @@ def computePrecisionRecall(f, header):
     for line in f:
         pieces = line.rstrip('\n').split(' ')
         if "Prediction:" == pieces[0]:
+
+            # old stuff
             found_prediction = True
             pred = int(pieces[1])
             actual = int(pieces[3])
@@ -30,14 +42,28 @@ def computePrecisionRecall(f, header):
                 true_positive[pred] += 1
             else:
                 false_positive[pred] += 1
+            #new stuff
+            results[pred][actual] += 1
         else:
             if found_prediction:
                 break
 
+    pr_header = ["Digit", "Precision", "Recall"]
+    pr_data = []
     for i in range(0, 9+1):
         recall = true_positive[i] / float(total_actual[i])
         precision = true_positive[i] / float(total_predicted[i])
-        print("Digit: " + str(i) + " Recall: " + str(recall) + " Precision: " + str(precision))
+
+        entry = [str(i), precision, recall]
+        pr_data.append(entry)
+        #print("Digit: " + str(i) + " Recall: " + str(recall) + " Precision: " + str(precision))
+    print("Result Counts")
+    proc_results = results.tolist()
+    for i in range(0, 9+1):
+        proc_results[i].insert(0, '\'' + str(i) + '\'')
+    print(tabulate(proc_results, headers=table_header, tablefmt="latex"))
+    print("Precision and Recall Values")
+    print(tabulate(pr_data, headers=pr_header, tablefmt="latex"))
 
 
 if __name__ == "__main__":
