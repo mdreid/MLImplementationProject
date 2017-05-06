@@ -1,17 +1,15 @@
 \section{Methods}
-	\subsection{Algorithms and Combining Methods}
-		In our hybrid approach, we combine the decision tree algorithm with a nearest neighbor algorithm (k-d tree or exhaustive search). Figure \ref{fig:workflow} shows the flowchart of the approach over the MNIST dataset. 
-		
-		First of all, since the number of features in MNIST dataset is too big (784 features), to reduce the training time, we apply principal component analysis (PCA) to the training set to reduce the number of features to 100. Then the training data is input to the decision tree algorithm to obtain a classification tree. After that the tree is pruned, and at each of the leaf nodes, we build a nearest neighbor model to make predictions instead of using the normal majority-approach. The following sections will give more details about Decision Tree and Nearest Neighbor.
-		
-	\subsection{Decision Tree}
-    \input{DecisionTree}
-	\subsection{Nearest Neighbor}
-		$k$-\textit{NEAREST NEIGHBOR} ($k$-\textit{NN}) is an instance-based, or ``lazy'' learning method that stores the training examples in the learning phase, and estimates the target function for each new instance to be classified. This algorithm assumes all instances correspond to points in the $n$-dimensional space, and to classify an instance $i$, $k$-\textit{NN} finds the instance's $k$ closest neighbors and assigns \^{c} as $i$'s label, where \^{c} is the most common label among those $k$ nearest neighbors. The nearest neighbors can be found using one of these distance methods: Euclidean, Hamming, or Manhattan. In this paper, we use Euclidean as our distance method for $k$-\textit{NN}.
-		\subsubsection{Exhaustive Search}
-		Exhaustive Search is a straightforward way to implement $k$-\textit{NN}. That is, we store all the training instances in the learning step. To classify an instance, we loop through all the training instances to find its $k$ nearest neighbors. For this reason, the prediction time can be very long if the training set is large. This is why we also implement K-D tree in the next section to find an instance nearest neighbor
-		
-		\subsubsection{K-D Tree}
-		The K-D tree version of $k$-\textit{NN} stores the training instances in a K-D data structure during the training step, and then uses this tree to find the nearest neighbor to an instance during the predicting step.
-		
+\subsection{Algorithms and Combining Methods}
+In our hybrid approach, we combine the decision tree algorithm with a nearest neighbor algorithm (we found that $k$-d trees performed better than exhaustive search). Figure \ref{fig:workflow} shows the operations on the dataset.
 
+First of all, since the number of features in MNIST dataset is too big (784 features), to reduce the training time, we apply principal component analysis (PCA) to the training set to reduce the number of features to 100. Then the training data is input to the decision tree algorithm to obtain a classification tree. After that the tree is pruned, and at each of the leaf nodes, we build a nearest neighbor model to make predictions instead of using the normal majority-approach. The following sections will give more details about Decision Tree and Nearest Neighbor.
+
+\subsection{Decision Tree}
+\input{DecisionTree}
+\subsection{Nearest Neighbor}
+$k$-\textit{NEAREST NEIGHBOR} ($k$-NN) is an instance-based, or ``lazy'' learning method that stores the training examples in the learning phase, and estimates the target function for each new instance to be classified. This algorithm assumes all instances correspond to points in the $n$-dimensional space, and to classify an instance $i$, $k$-NN finds the instance's $k$ closest neighbors and assigns \^{c} as $i$'s label, where \^{c} is the most common label among those $k$ nearest neighbors. The nearest neighbors can be found using one of these distance methods: Euclidean, Squared Euclidean, Hamming, or Manhattan. In this paper, we use Squared Euclidean as our distance method for $k$-NN.
+\subsubsection{Exhaustive Search}
+Exhaustive Search is a straightforward way to implement $k$-NN. That is, we store all the training instances in the learning step. To classify an instance, we loop through all the training instances to find its $k$ nearest neighbors. Hence, the time complexity to find an instance's nearest neighbor uisng Exhaustive Search is $O(N)$. For this reason, the prediction time can be very long if the training set is large. This is why we also implement $k$-d tree in the next section to find an instance nearest neighbor
+
+\subsubsection{$k$-d Tree}
+The $k$-d tree version of $k$-NN stores the training instances in a $k$-d tree data structure during the training step, and then uses this tree to find the nearest neighbor to an instance during the predicting step. The time complexity to find an instance's nearest neighbor can be greatly improved by $k$-d Tree to an average of $O(log_2N)$
