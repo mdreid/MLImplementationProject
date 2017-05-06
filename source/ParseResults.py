@@ -10,7 +10,7 @@ def computePrecisionRecall(f, header):
     results = np.zeros((10, 10))
     table_header = ['\'' + str(x) + '\'' for x in range(0, 9+1)]
     table_header.insert(0, ' ')
-    print(table_header)
+    #print(table_header)
     #print(results)
     # old stuff
     print(header)
@@ -32,7 +32,7 @@ def computePrecisionRecall(f, header):
         pieces = line.rstrip('\n').split(' ')
         if "Prediction:" == pieces[0]:
 
-            # old stuff
+            # needed to compute precision and recall
             found_prediction = True
             pred = int(pieces[1])
             actual = int(pieces[3])
@@ -51,6 +51,7 @@ def computePrecisionRecall(f, header):
     pr_header = ["Digit", "Precision", "Recall"]
     pr_data = []
     for i in range(0, 9+1):
+        # compute precision and recall for one digit at a time
         recall = true_positive[i] / float(total_actual[i])
         precision = true_positive[i] / float(total_predicted[i])
 
@@ -68,6 +69,6 @@ def computePrecisionRecall(f, header):
 
 if __name__ == "__main__":
     with open(sys.argv[1]) as f:
-        computePrecisionRecall(f, "FIRST")
-        computePrecisionRecall(f, "SECOND")
+        computePrecisionRecall(f, "Without k-d tree")
+        computePrecisionRecall(f, "With k-d tree")
 
