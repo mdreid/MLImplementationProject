@@ -1,6 +1,6 @@
 \section{Methods}
 \subsection{Combining Approaches}
-In our hybrid approach, we combine the decision tree algorithm with a Nearest Neighbor algorithm (we found that $k$-d tree Nearest Neighbor implementations performed better than exhaustive search). Figure \ref{fig:workflow} shows the control flow of operations on the data set.
+In our hybrid approach, we combine the decision tree algorithm with a Nearest Neighbor algorithm (we found that $k$-d tree Nearest Neighbor implementations performed better than exhaustive search). Figure \ref{fig:workflow} shows the control flow of operations on the data set used to produce the final classifier model.
 
 After learning and pruning a decision tree using the C4.5 algorithm, for each leaf of the decision tree we associate a $k$-d tree.
 
@@ -12,9 +12,11 @@ Next, this reduced-dimensionality training data is used to train a hybrid decisi
 \subsection{Decision Tree}
 \input{DecisionTree}
 \subsection{Nearest Neighbor}
-$k$-\textit{NEAREST NEIGHBOR} ($k$-NN) is an instance-based, or ``lazy'' learning method that stores the training examples in the learning phase, and estimates the target function for each new instance to be classified. This algorithm assumes all instances correspond to points in the $n$-dimensional space, and to classify an instance $i$, $k$-NN finds the instance's $k$ closest neighbors and assigns \^{c} as $i$'s label, where \^{c} is the most common label among those $k$ nearest neighbors. The nearest neighbors can be found using one of these distance methods: Euclidean, Squared Euclidean, Hamming, or Manhattan. In this paper, we use Squared Euclidean as our distance method for $k$-NN.
+The $k$-\textit{NEAREST NEIGHBOR} ($k$-NN) algorithm is an instance-based, or ``lazy'' learning method that stores the training examples in the learning phase, and estimates the target function for each new instance to be classified. This algorithm assumes all instances correspond to points in the $n$-dimensional space, and to classify an instance $i$, $k$-NN finds the instance's $k$ closest neighbors and assigns the label that is most common among those $k$ nearest neighbors. Multiple similarity/distance measures can be used to find the $k$ nearest neighbors to an instance, including the following: Euclidean, Squared Euclidean, Hamming, or Manhattan. In this paper, we use Squared Euclidean as our distance measure for $k$-NN.
 \subsubsection{Exhaustive Search}
-Exhaustive Search is a straightforward way to implement $k$-NN. That is, we store all the training instances in the learning step. To classify an instance, we loop through all the training instances to find its $k$ nearest neighbors. Hence, the time complexity to find an instance's nearest neighbor uisng Exhaustive Search is $O(N)$. For this reason, the prediction time can be very long if the training set is large. This is why we also implement $k$-d tree in the next section to find an instance nearest neighbor
+Exhaustive Search is the naive version of $k$-NN. That is, we directly store all the training instances in the learning step. Then, to classify a new instance, we loop through all the training instances to find its $k$ nearest neighbors.
+
+ Hence, the time complexity to find an instance's nearest neighbor using Exhaustive Search is $O(N)$. For this reason, the prediction time can be very long if the training set is large. This is why we also implement $k$-d tree in the next section to find an instance nearest neighbor
 
 \subsubsection{$k$-d Tree}
 The $k$-d tree version of $k$-NN stores the training instances in a $k$-d tree data structure during the training step, and then uses this tree to find the nearest neighbor to an instance during the predicting step. The time complexity to find an instance's nearest neighbor can be greatly improved by $k$-d Tree to an average of $O(log_2N)$
