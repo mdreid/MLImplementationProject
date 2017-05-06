@@ -1,4 +1,8 @@
 \section{Results}
+Our code was written in Python 2.7 and ran on a machine with the following hardware information: Windows 10 64bit, Intel 5820k CPU, 32GB memory.
+
+Before running the model on the test data set, we did a speed test between the two versions of Nearest Neighbors, $k$-d tree and exhaustive search, and even though we had a relatively large number of features (100), the $k$-d tree version performed slightly better the exhaustive search. We then decided to use the $k$-d tree version of Nearest Neighbor. 
+
 After running our hybrid decision tree algorithm over the various settings of training, tuning, and testing sets, we generate learning curves to compare the performance of standard decision trees (in which a leaf's associated prediction is based on a plurality of the subset of training data at that leaf) and our hybrid trees.  In Figure \ref{fig:learn_curve}, we can see that the performance of standard trees actually fell off with increased training set size, which provides evidence of overfitting. The hybrid trees, in contrast, showed great improvements in accuracy relative to the standard trees, with the margin increasing for larger training and tuning sets.
 
 \begin{figure}
@@ -10,6 +14,8 @@ After running our hybrid decision tree algorithm over the various settings of tr
 To assess the classifier's performance for each handwritten digit, we used the predictions from the setting with 10000 training examples (1000 tuning examples and 10000 testing) to generate a confusion matrix and calculate the values of precision and recall for each digit.  Again, we repeated this for both standard and hybrid decision trees.  Looking at Table \ref{table:no_kd_precision_recall} we can see the digit 2 was never predicted by the standard decision tree.  Other digits, such as 9, exhibit extremely low values of recall. Looking at the confusion matrix in Table \ref{table:no_kd_confusion} we see that the standard decision tree classifier most often predicted the digit 7 for a handwritten 9.  We also have some digits the exhibit unusually low precision coupled with good recall.  For example, the standard decision tree classifier often predicted 1 when presented with examples of other handwritten digits.
 
 Looking at Table \ref{table:with_kd_confusion} and Table \ref{table:with_kd_precision_recall} we can see that the handwritten 2 is actually classifiable (has non-zero precision and recall) by the hybrid classifier.  Additionally, Table \ref{table:with_kd_precision_recall} does not exhibit those unusually low values of precision and recall
+
+Interestingly, the size and heights of the generated decision trees varies widely with the number of training examples, as shown in \ref{table:dt_sizes}.
 
 \begin{table}
 	\begin{tabular}{l|llllllllll}
@@ -87,4 +93,19 @@ Looking at Table \ref{table:with_kd_confusion} and Table \ref{table:with_kd_prec
 	\end{tabular}
 	\caption{Precision and recall for hybrid decision trees, for each handwritten digit.}
 	\label{table:with_kd_precision_recall}
+\end{table}
+
+\begin{table}
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|}
+        \hline
+        & 100 & 500 & 1000 & 5000 & 10000 \\
+        \hline
+        Unpruned & 57 (18) & 153 (46) & 213 (41) & 275 (91) & 91 (17) \\
+        \hline
+        Pruned  & 45 (16) & 105 (44)  & 177 (39) & 241 (91) & 65 (16) \\
+        \hline
+    \end{tabular}
+    \caption{Size in number of nodes of unpruned and pruned decision trees built for various numbers of training examples. The height of each decision tree is in parentheses.}
+    \label{table:dt_sizes}
 \end{table}
