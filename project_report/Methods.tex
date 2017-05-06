@@ -19,4 +19,10 @@ Exhaustive Search is the naive version of $k$-NN. That is, we directly store all
  Hence, the time complexity to find an instance's nearest neighbor using Exhaustive Search is $O(N)$. For this reason, the prediction time can be very long if the training set is large. This is why we also created and tested a $k$-d implementation.
 
 \subsubsection{$k$-d Tree}
-The $k$-d tree version of $k$-NN stores the training instances in a $k$-d tree data structure during the training step, and then uses this tree to find the nearest neighbor to an instance during the predicting step. The time complexity to find an instance's nearest neighbor can be greatly improved by $k$-d Tree to an average of $O(log_2N)$. Our implementation for $k$-d tree is based on this wiki page \cite{KDWiki}.
+The $k$-d tree version of $k$-NN stores the training instances in a $k$-d tree data structure during the training step, and then uses this tree to find the nearest neighbor to an instance during the predicting step. The time complexity to find an instance's nearest neighbor can be greatly improved by $k$-d Tree to an average of $O(log_2N)$. 
+
+\subsection{Training and Testing}
+
+We divide the MNIST dataset into two broad pools.  From the first pool we draw training and tuning sets.  From the second we draw the testing set used to assess the algorithm.
+
+We tested several settings of of training, tuning, and testing sets.  The testing set always consists of 10,000 instances.  The training set sizes are 100, 500, 1000, 5000, and 10,000. For each setting, the tuning set is always 10\% the size of the training set.
