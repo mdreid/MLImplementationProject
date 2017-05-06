@@ -440,16 +440,20 @@
 	%\blindtext
 	Classification is the problem of identifying the category to which observations belong, given that the identity of the category is unknown at the beginning. A classification algorithm required to place these observations or instances into groups based on information of each of the object’s attribute. A great deal of algorithms have been proposed in the last decades for classifying data in a variety of domains.
 
-	Decision tree learning is one of the most widely used and practical methods for inductive inference. [1] --- putting some shortcomings of decision tree here => think of adding k-d tree to improve. ---
-
+	Lazy learning which is a form of supervised learning where during the learning phase, all input samples are stored and no other attempt will be made []. The search for the optimal hypothesis takes place during the classification phase. There are several instance-based lazy learning algorithms. One of the best known is k-Nearest Neighbor (k-NN) []. The learning phase of k-NN is simply storing training samples. During the classification phase, k-NN use of a similarity-based search strategy to determine an optimal hypothesis function. New instances will be compared to the stored instances and will be classified the same class label as the k most similar stored instances.
+	
+	Opposite of lazy learning is eager learning is a form of supervised learning where there is a learning module, classification module and a model. Eager learning algorithms invest most of their effort in the learning phase. Classification of new instances is usually done by rules that uses the model. Decision tree learning is one of the most widely used and practical methods eager learning. This is a representation of how to make a decision according to a particular attribute set []. --- putting some shortcomings of decision tree here => think of adding k-d tree to improve. ---
+	
 	The final decision tree nodes contain univariate splits as regular decision trees, but the leaf nodes contain with nearest neighbor search with KD trees, which is a variant of standard Nearest Neighbor classifier. Our results on a handwritten digit dataset shows that this hybrid approach has clear advantages when compared against its counterpart, Decision Tree.
+
 	\section{Related Works}
 %	\blindtext
 	\section{Methods}
 
 	\subsection{Dataset}
-	Dataset that we used is MNIST database of handwritten digits. This dataset has pixel values (integers from 0 to 255) for 60,000 training examples. The MNIST database contains a separate testing set of 10,000 examples.
+	Dataset that we used is MNIST database of handwritten digits. This dataset has pixel values (integers from 0 to 255) for 60,000 training examples. The MNIST database contains a separate testing set of 10,000 examples. The 60,000 pattern training set contained examples from approximately 250 writers.\cite{MNISTDatabase}
 	\subsection{Algorithm}
+	\subsubsection {Preprocessing}
 	%\begin{algorithm}[H]
 		\begin{flushleft}
 			\item{MakeSubTree(set of training instances $D$)}:
