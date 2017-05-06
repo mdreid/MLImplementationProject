@@ -1,4 +1,8 @@
 \section{Results}
+Our code was written in Python 2.7 and ran on a machine with the following hardware information: Windows 10 64bit, Intel 5820k CPU, 32GB memory.
+
+Before running the model on the test data set, we did a speed test between the two versions of Nearest Neighbors, $k$-d tree and exhaustive search, and even though we had a relatively large number of features (100), the $k$-d tree version performed slightly better the exhaustive search. We then decided to use the $k$-d tree version of Nearest Neighbor. 
+
 After running our hybrid decision tree algorithm over the various settings of training, tuning, and testing sets, we generate learning curves to compare the performance of standard decision trees (in which a leaf's associated prediction is based on a plurality of the subset of training data at that leaf) and our hybrid trees.  In Figure \ref{fig:learn_curve}, we can see that the performance of standard trees actually fell off with increased training set size, which provides evidence of overfitting. The hybrid trees, in contrast, showed great improvements in accuracy relative to the standard trees, with the margin increasing for larger training and tuning sets.
 
 \begin{figure}
