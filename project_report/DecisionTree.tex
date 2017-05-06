@@ -2,10 +2,13 @@ After running PCA, we had a set of 100 real-valued features.
 Therefore, we decided on an algorithm implementation
 We implemented decision trees using Quinlan's C4.5 algorithm (cite - Quinlan).
 At a high level, we grew a complete tree and then greedily pruned it.
-To choose splits, we choose the split with the maximum information gain.
-We prune the tree using a tuning set 10\% of the size of the training set not including these tuning examples.
-For each pair of leaf nodes, we compare the accuracy of the tree on the tuning set with the pair to the accuracy of the tree on the tuning set without the pair.
-If the latter is less than or equal to the former, we prune the leaves.
-We repeat this pruning process recursively.
-We provide data on the the size of the tree before and after pruning in the Results section.
+To choose splits, we use the heuristic of maximum information gain.  We identify candidate splits for each feature by locating thresholds within the data where there is a difference in class values.  See [<<QUINLAN's paper>>] for further information.
+
+We prune the tree using a tuning set 10\% of the size of the training set.
+For each pair of sibling leaf nodes, we compare the accuracy of the tree on the tuning set with the pair present in the tree to the accuracy of the tree on the tuning set with the siblings' parent as a new leaf node.
+If the latter accuracy is at least as good as the former accuracy, we prune the leaves.  We repeat this pruning process recursively until there are no possible pruning choices which do not hurt the accuracy of the tree.
+
+After the pruning process has completed, we use the subsets of training data which reach each leaf to create $k$-d trees.  This is further described in the following section.
+
+We provide data on the the size of the tree before and after pruning in the Results section.  We also compare the standard decision tree's accuracy to the accuracy of our hybrid tree.
 
