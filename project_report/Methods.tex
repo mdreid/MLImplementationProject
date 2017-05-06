@@ -1,0 +1,31 @@
+\section{Dataset}
+	Dataset that we used is MNIST database of handwritten digits. This dataset has pixel values (integers from 0 to 255) for 60,000 training examples. The MNIST database contains a separate testing set of 10,000 examples.
+	\subsection{Algorithm}
+	%\begin{algorithm}[H]
+		\begin{flushleft}
+			\item{MakeSubTree(set of training instances $D$)}:
+		\end{flushleft}
+		\begin{algorithmic}[1]
+
+			\renewcommand{\algorithmicrequire}{\textbf{Input: }}
+			\renewcommand{\algorithmicensure}{\textbf{Output:}}
+			\REQUIRE set of  training instances $D$
+			\ENSURE  decision tree
+
+			\STATE{$C \leftarrow DetermineCandidateSplits(D)$}
+			\IF {stopping criteria met}
+			\STATE make a leaf node
+			\STATE store instances D here // (possibility 1)
+			\ELSE
+			\STATE make an internal node $N$
+			\STATE{$S \leftarrow FindBestSplit(D,C)$}
+			\ENDIF
+
+			\FOR {each outcome $k$ of $S$}
+			\STATE {$D_{k} \leftarrow$} {subset of instances that have outcome $k$}
+			\STATE {$k^{th}$ child of $N$}{$ \leftarrow MakeSubtree(D_{k})$}
+			\ENDFOR
+			\RETURN {subtree rooted at $N$}
+		\end{algorithmic}
+	%\end{algorithm}
+	\subsection{Dimensionality Reduction}
