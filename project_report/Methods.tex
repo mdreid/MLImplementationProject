@@ -1,7 +1,11 @@
 \section{Methods}
 	\subsection{Algorithms and Combining Methods}
+		In our hybrid approach, we combine the decision tree algorithm with a nearest neighbor algorithm (k-d tree or exhaustive search). Figure \ref{fig:workflow} shows the flowchart of the approach over the MNIST dataset. 
+		
+		First of all, since the number of features in MNIST dataset is too big (784 features), to reduce the training time, we apply principal component analysis (PCA) to the training set to reduce the number of features to 100. Then the training data is input to the decision tree algorithm to obtain a classification tree. After that the tree is pruned, and at each of the leaf nodes, we build a nearest neighbor model to make predictions instead of using the normal majority-approach. The following sections will give more details about Decision Tree and Nearest Neighbor.
 		
 	\subsection{Decision Tree}
+    \input{DecisionTree}
 	\subsection{Nearest Neighbor}
 		\subsubsection{K-D Tree}
 		\subsubsection{Exhaustive Search}
