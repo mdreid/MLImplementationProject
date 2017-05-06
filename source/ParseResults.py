@@ -8,7 +8,7 @@ from tabulate import tabulate
 def computePrecisionRecall(f, header):
 
     results = np.zeros((10, 10))
-    table_header = ['\'' + str(x) + '\'' for x in range(0, 9+1)]
+    table_header = [str(x) for x in range(0, 9+1)]
     table_header.insert(0, ' ')
     #print(table_header)
     #print(results)
@@ -61,7 +61,7 @@ def computePrecisionRecall(f, header):
     print("Result Counts")
     proc_results = results.tolist()
     for i in range(0, 9+1):
-        proc_results[i].insert(0, '\'' + str(i) + '\'')
+        proc_results[i].insert(0, str(i))
     print(tabulate(proc_results, headers=table_header, tablefmt="latex"))
     print("Precision and Recall Values")
     print(tabulate(pr_data, headers=pr_header, tablefmt="latex"))
