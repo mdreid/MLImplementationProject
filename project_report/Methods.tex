@@ -1,8 +1,13 @@
 \section{Methods}
-\subsection{Algorithms and Combining Methods}
-In our hybrid approach, we combine the decision tree algorithm with a nearest neighbor algorithm (we found that $k$-d trees performed better than exhaustive search). Figure \ref{fig:workflow} shows the operations on the dataset.
+\subsection{Combining Approaches}
+In our hybrid approach, we combine the decision tree algorithm with a Nearest Neighbor algorithm (we found that $k$-d tree Nearest Neighbor implementations performed better than exhaustive search). Figure \ref{fig:workflow} shows the control flow of operations on the data set.
 
-First of all, since the number of features in MNIST dataset is too big (784 features), to reduce the training time, we apply principal component analysis (PCA) to the training set to reduce the number of features to 100. Then the training data is input to the decision tree algorithm to obtain a classification tree. After that the tree is pruned, and at each of the leaf nodes, we build a nearest neighbor model to make predictions instead of using the normal majority-approach. The following sections will give more details about Decision Tree and Nearest Neighbor.
+After learning and pruning a decision tree using the C4.5 algorithm, for each leaf of the decision tree we associate a $k$-d tree.
+
+\subsection{Dimensionality Reduction}
+Since the number of features in MNIST dataset is relatively large (784 features), we initially experienced prohibitively long training times. In order to reduce the training time, we use scikit-learn Python machine learning API to apply principal components analysis (PCA) to the training set to reduce the number of features to 100. Note that we generate the transform object using training and tuning data and then apply it to training, tuning, and testing data.  This way we avoid any overfitting issues that might result from the inclusion of our testing data.
+
+Next, this reduced-dimensionality training data is used to train a hybrid decision tree. After the pruning step, and at each of the leaf nodes, we build a Nearest Neighbor model to make predictions instead of using the normal majority-approach. The following sections will give more details about our hybrid classifier's implementation.
 
 \subsection{Decision Tree}
 \input{DecisionTree}
