@@ -64,6 +64,18 @@
 %
 \documentclass[conference]{IEEEtran}
 \usepackage{blindtext, graphicx, algorithmic}
+
+% hacky table stuff
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd{\@makecaption}
+{\scshape}
+{}
+{}
+{}
+\makeatother
+
+\def\tablename{Table}
 % Add the compsoc option for Computer Society conferences.
 %
 % If IEEEtran.cls has not been installed into the LaTeX system files,
@@ -429,6 +441,11 @@
 	% creates the second title. It will be ignored for other modes.
 	\IEEEpeerreviewmaketitle
 
+\begin{figure*}[thbp]
+	\includegraphics[width=\textwidth]{Figures/workflow.jpg}
+	\caption{Algorithm high-level flowchart}
+	\label{fig:workflow}
+\end{figure*}
 
 \input{Introduction.tex}
 \input{RelatedWork.tex}
