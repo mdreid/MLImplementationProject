@@ -71,15 +71,15 @@ We also observed an interesting phenomenon with the size and height of the gener
 		8 &   0 &    0 &   6 &  12 &   2 &   7 &   2 &   0 & 864 &   5 \\
 		9 &   0 &    0 &   1 &  11 &  44 &   4 &   0 &  16 &  22 & 943 \\
 	\end{tabular}
-	\caption{Confusion matrix for new hybrid decision trees.  Note that entries in the top header correspond to the actual labels of the handwritten digits while entries in the left sidebar correspond to the labels predicted by the tree.}
+	\caption{Confusion matrix for hybrid decision trees.  Note that entries in the top header correspond to the actual labels of the handwritten digits while entries in the left sidebar correspond to the labels predicted by the tree.}
 	\label{table:with_kd_confusion}
 \end{table}
 
 \begin{table}
 	\centering
 	\begin{tabular}{rrr}
-		\hline
 		Digit &   Precision &   Recall \\
+		\hline
 		0 &    0.947581 & 0.959184 \\
 		1 &    0.950972 & 0.991189 \\
 		2 &    0.962114 & 0.935078 \\
@@ -97,14 +97,11 @@ We also observed an interesting phenomenon with the size and height of the gener
 
 \begin{table}
     \centering
-    \begin{tabular}{|c|c|c|c|c|c|}
-        \hline
+    \begin{tabular}{c|ccccc}
         & 100 & 500 & 1000 & 5000 & 10000 \\
         \hline
         Unpruned & 57 (18) & 153 (46) & 213 (41) & 275 (91) & 91 (17) \\
-        \hline
         Pruned  & 45 (16) & 105 (44)  & 177 (39) & 241 (91) & 65 (16) \\
-        \hline
     \end{tabular}
     \caption{The first number in each table entry is the total number of nodes in unpruned and pruned decision trees built for various numbers of training examples. The second number in parentheses is the height of the tree (that is, the number of nodes from the root to the farthest leaf, inclusive).}
     \label{table:dt_sizes}
