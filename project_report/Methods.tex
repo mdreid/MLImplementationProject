@@ -13,16 +13,20 @@ Next, this reduced-dimensionality training data is used to train a hybrid decisi
 \input{DecisionTree}
 \subsection{Nearest Neighbor}
 The $k$-\textit{NEAREST NEIGHBOR} ($k$-NN) algorithm is an instance-based, or ``lazy'' learning method that stores the training examples in the learning phase, and estimates the target function for each new instance to be classified. This algorithm assumes all instances correspond to points in the $n$-dimensional space, and to classify an instance $i$, $k$-NN finds the instance's $k$ closest neighbors and assigns the label that is most common among those $k$ nearest neighbors. Multiple similarity/distance measures can be used to find the $k$ nearest neighbors to an instance, including the following: Euclidean, Squared Euclidean, Hamming, or Manhattan. In this paper, we use Squared Euclidean as our distance measure for $k$-NN.
+
 \subsubsection{Exhaustive Search}
 Exhaustive Search is the naive version of $k$-NN. That is, we directly store all the training instances in the learning step. Then, to classify a new instance, we loop through all the training instances to find its $k$ nearest neighbors.
 
- Hence, the time complexity to find an instance's nearest neighbor using Exhaustive Search is $O(N)$. For this reason, the prediction time can be very long if the training set is large. This is why we also created and tested a $k$-d implementation.
+Hence, the time complexity to find an instance's nearest neighbor using Exhaustive Search is $O(N)$. For this reason, the prediction time can be very long if the training set is large. This is why we also created and tested a $k$-d implementation.
 
 \subsubsection{$k$-d Tree}
-The $k$-d tree version of $k$-NN stores the training instances in a $k$-d tree data structure during the training step, and then uses this tree to find the nearest neighbor to an instance during the predicting step. The time complexity to find an instance's nearest neighbor can be greatly improved by $k$-d Tree to an average of $O(log_2N)$. 
+The $k$-d tree version of $k$-NN stores the training instances in a $k$-d tree data structure during the training step, and then uses this tree to find the nearest neighbor to an instance during the predicting step. A $k$-d tree \cite{bentley1975multidimensional} (short for k-dimensional tree) is a space-partitioning data structure for organizing points in a $k$-dimensional space. The time complexity to find an instance's nearest neighbor can be greatly improved by $k$-d Tree to an average of $O(log_2N)$. We built the tree with the following constraints \cite{de2000computational}
+\begin{itemize}
+	\item As one moves down the tree, one cycles through the axes used to select the splitting planes
+	\item Points are inserted by selecting the median of the points being put into the subtree, with respect to their coordinates in the axis being used to create the splitting plane
+\end{itemize}
 
 \subsection{Training and Testing}
-
 We divide the MNIST dataset into two broad pools.  From the first pool we draw training and tuning sets.  From the second we draw the testing set used to assess the algorithm.
 
 We tested several settings of of training, tuning, and testing sets.  The testing set always consists of 10,000 instances.  The training set sizes are 100, 500, 1000, 5000, and 10,000. For each setting, the tuning set is always 10\% the size of the training set.
