@@ -4,7 +4,7 @@ We see that our hybrid decision tree algorithm performs better than decision tre
 
 Interestingly, C4.5 performs quite poorly on our data. Possible reasons for this may be noise in the data or overfitting. Also, as Quinlan notes in (cite-improved c4.5), some have noted that C4.5 performs worse in learning settings with continuous attributes than it does in learning settings with discrete attributes. In that same work, Quinlan proposed modifications to C4.5 for improving its performance with continuous attributes. These modifications resulted in smaller decision trees and better accuracy. Future work might examine how the performance of our hybrid approach compares to that of the modified C4.5 learning algorithm.
 
-While our algorithm performs well, it is inefficient. We combine a "lazy" learning algorithm with an "eager" one to get the worst of both worlds. While $k$-NN learns quickly and takes a long time to classify examples, decision trees take a long time to build and a comparatively short time to classify examples.
+While our algorithm performs well, it is inefficient. We combine a ``lazy'' learning algorithm with an ``eager'' one to get the worst of both worlds. While $k$-NN learns quickly and takes a long time to classify examples, decision trees take a long time to build and a comparatively short time to classify examples.
 
 Two decisions that we made somewhat arbitrarily but that could be parametrized are the number of components for PCA and the size of the tuning set. We might be able to improve our algorithm by doing a grid search over these parameters. For example, LeCun et al. achieved 96.7\% accuracy on the MNIST dataset after training a classifier with only 40 components after PCA (Cite-lecun98).
 
