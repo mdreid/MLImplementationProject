@@ -32,7 +32,7 @@ We also observed an interesting phenomenon with the size and height of the gener
 		8 &   0 &    0 &   0 &   0 &   1 &   0 &   0 &   0 &   2 &   0 \\
 		9 &   0 &    0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   1 \\
 	\end{tabular}
-	\caption{Confusion matrix for standard decision trees.  Note that horizontal indices correspond to the actual labels of the handwritten digits while vertical indices correspond to the labels predicted by the tree.}
+	\caption{Confusion matrix for standard decision trees.  Note that entries in the top header correspond to the actual labels of the handwritten digits while entries in the left sidebar correspond to the labels predicted by the tree.}
 	\label{table:no_kd_confusion}
 \end{table}
 
@@ -71,7 +71,7 @@ We also observed an interesting phenomenon with the size and height of the gener
 		8 &   0 &    0 &   6 &  12 &   2 &   7 &   2 &   0 & 864 &   5 \\
 		9 &   0 &    0 &   1 &  11 &  44 &   4 &   0 &  16 &  22 & 943 \\
 	\end{tabular}
-	\caption{Confusion matrix for new hybrid decision trees.  Note that horizontal indices correspond to the actual labels of the handwritten digits while vertical indices correspond to the labels predicted by the tree.}
+	\caption{Confusion matrix for new hybrid decision trees.  Note that entries in the top header correspond to the actual labels of the handwritten digits while entries in the left sidebar correspond to the labels predicted by the tree.}
 	\label{table:with_kd_confusion}
 \end{table}
 
@@ -106,6 +106,6 @@ We also observed an interesting phenomenon with the size and height of the gener
         Pruned  & 45 (16) & 105 (44)  & 177 (39) & 241 (91) & 65 (16) \\
         \hline
     \end{tabular}
-    \caption{Size in number of nodes of unpruned and pruned decision trees built for various numbers of training examples. The height of each decision tree is in parentheses.}
+    \caption{The first number in each table entry is the total number of nodes in unpruned and pruned decision trees built for various numbers of training examples. The second number in parentheses is the height of the tree (that is, the number of nodes from the root to the farthest leaf, inclusive).}
     \label{table:dt_sizes}
 \end{table}
