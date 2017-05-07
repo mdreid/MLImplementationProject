@@ -10,11 +10,11 @@ if __name__ == "__main__":
     chanceAccuracy = [0.1 for i in range(len(dataSize))] 
     # chanceAccuracy = [0.1, 0.1, 0.1, 0.1, 0.1]
     fig = plt.figure(1)
-    plt.title("Accuracy for different training size")
+    plt.title("Accuracy for different training sizes")
     plt.ylabel("Accuracy")
     plt.xlabel("Training Size")
-    plt.plot(dataSize, postPruningAccuracy, 'ro--', label='Without KD tree')
-    plt.plot(dataSize, postPruningWithKdAccuracy, 'g^--', label='With KD tree')
+    plt.plot(dataSize, postPruningAccuracy, 'ro--', label='Without k-d tree')
+    plt.plot(dataSize, postPruningWithKdAccuracy, 'g^--', label='With k-d tree')
     plt.plot(dataSize, chanceAccuracy, 'bs--', label='Chance')
     # plt.plot(dataSize, prePruningAccuracy, 'bs--', label='Pre-pruning')
     plt.ylim(ymin=0)
