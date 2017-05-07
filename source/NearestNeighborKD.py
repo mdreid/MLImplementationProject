@@ -1,12 +1,15 @@
 from collections import namedtuple
 import numpy as np
 
-# based on https://en.wikipedia.org/wiki/K-d_tree
-# and http://code.activestate.com/recipes/577497-kd-tree-for-nearest-neighbor-search-in-a-k-dimensi/
+# When implementing the the k-d tree the following links were useful guides:
+# 1. https://en.wikipedia.org/wiki/K-d_tree
+# 2. http://code.activestate.com/recipes/577497-kd-tree-for-nearest-neighbor-search-in-a-k-dimensi/
+# The first helped us to understand k-d tree, and the second helped us with implementing the tree. 
+# Specifically, some code was taken from the second link (publicly available) and modified 
+# for our use in the build_tree and __nearest_neighbor method.
+
+
 Node = namedtuple("Node", 'point axis label left right')
-
-
-
 
 class NearestNeighborKD:
     # The number of features after shrank, can be dynamically set based on the number of training data,
