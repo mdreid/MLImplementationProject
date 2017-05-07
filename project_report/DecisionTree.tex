@@ -1,8 +1,8 @@
 After running PCA, we had a set of 100 real-valued features. 
 Therefore, we decided on an algorithm implementation
-We implemented decision trees using Quinlan's C4.5 algorithm (cite - Quinlan).
+We implemented decision trees using Quinlan's C4.5 algorithm \cite{quinlan2014c4}.
 At a high level, we grew a complete tree and then greedily pruned it.
-To choose splits, we use the heuristic of maximum information gain.  We identify candidate splits for each feature by locating thresholds within the data where there is a difference in class values.  See [<<QUINLAN's paper>>] for further information.
+To choose splits, we use the heuristic of maximum information gain.  We identify candidate splits for each feature by locating thresholds within the data where there is a difference in class values.  See Quinlan's description in \cite{quinlan1996improved} for further information.
 
 We prune the tree using a tuning set 10\% of the size of the training set.
 For each pair of sibling leaf nodes, we compare the accuracy of the tree on the tuning set with the pair present in the tree to the accuracy of the tree on the tuning set with the siblings' parent as a new leaf node.
