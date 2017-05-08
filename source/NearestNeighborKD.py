@@ -4,7 +4,7 @@ import numpy as np
 # When implementing the the k-d tree the following links were useful guides:
 # 1. https://en.wikipedia.org/wiki/K-d_tree
 # 2. http://code.activestate.com/recipes/577497-kd-tree-for-nearest-neighbor-search-in-a-k-dimensi/
-# The first helped us to understand k-d tree, and the second helped us with implementing the tree. 
+# The first was used as a reference for understanding the implementation, and the second helped us with implementing the tree. 
 # Specifically, some code was taken from the second link (publicly available) and modified 
 # for our use in the build_tree and __nearest_neighbor method.
 
